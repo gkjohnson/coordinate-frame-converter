@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class CoordinateFrame {
@@ -53,11 +54,14 @@ public class CoordinateFrame {
 
         // Three axes ordered to describe left, up, and forward
         Axis[] _axes;
+        Dictionary<string, int> _axisToIndex;
 
         public Axis this[int i] { get { return _axes[i]; } }
+        public int this[string a] { get { return _axisToIndex[a.ToUpper()]; } }
 
         public AxisSet(string axes, bool guaranteeUniqueness = true) {
             _axes = SanitizeAxisDescription(axes, guaranteeUniqueness);
+            _axisToIndex = GetIndexMap(_axes);
         }
 
         Axis[] SanitizeAxisDescription(string s, bool guaranteeUniqueness = true) {
@@ -92,6 +96,12 @@ public class CoordinateFrame {
             if (guaranteeUniqueness) Debug.Assert(redundantCount == 0);
 
             return axes;
+        }
+
+        Dictionary<string, int> GetIndexMap(Axis[] axes) {
+            var dict = new Dictionary<string, int>();
+            for (int i = 0; i < 3; i++) dict[axes[i].axis.ToUpper()] = i;
+            return dict;
         }
     }
 
