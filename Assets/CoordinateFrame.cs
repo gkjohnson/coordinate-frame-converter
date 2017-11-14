@@ -59,6 +59,10 @@ public class CoordinateFrame {
         public Axis this[int i] { get { return _axes[i]; } }
         public int this[string a] { get { return _axisToIndex[a.ToUpper()]; } }
 
+        public Axis left    { get { return _axes[0]; } }
+        public Axis up      { get { return _axes[1]; } }
+        public Axis forward { get { return _axes[2]; } }
+
         public AxisSet(string axes, bool guaranteeUniqueness = true) {
             _axes = SanitizeAxisDescription(axes, guaranteeUniqueness);
             _axisToIndex = GetIndexMap(_axes);
