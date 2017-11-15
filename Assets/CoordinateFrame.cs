@@ -110,15 +110,15 @@ public class CoordinateFrame {
     }
 
     public Vector3 toPosition(AxisSet from, AxisSet to, Vector3 v) {
-        throw new NotImplementedException();
-
         Vector3 res = new Vector3();
+        for(int i = 0; i < 3; i ++) {
+            Axis fromAxis = from[i];
+            int toIndex = to[fromAxis.axis];
+            Axis toAxis = to[toIndex];
 
-        // TODO: add a map in the axis set ot map type => index
-        // iterate over each in from
-        // find the index in which the value belongs
-        // negate it if needed
-        // set the value
+            res[toIndex] = fromAxis.negative == toAxis.negative ? v[i] : -v[i];
+        }
+        return res;
     }
 
 
