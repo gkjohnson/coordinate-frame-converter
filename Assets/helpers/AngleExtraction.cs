@@ -15,14 +15,14 @@ class AngleExtraction {
         EA_NOT_UNIQUE_SUM
     }
 
-    float Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
+    static float Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
         int row = i / 3;
         int col = i % 3;
 
         return mat[row, col];
     }
 
-    Vector3 ExtractEulerXYZ(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerXYZ(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -70,7 +70,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerXZY(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerXZY(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -118,7 +118,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerYXZ(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerYXZ(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -166,7 +166,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerYZX(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerYZX(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -214,7 +214,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerZXY(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerZXY(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -262,7 +262,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerZYX(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerZYX(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -310,7 +310,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerXYX(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerXYX(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -354,7 +354,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerXZX(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerXZX(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -398,7 +398,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerYXY(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerYXY(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -442,7 +442,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerYZY(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerYZY(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -486,7 +486,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerZXZ(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerZXZ(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
@@ -530,7 +530,7 @@ class AngleExtraction {
         }
     }
 
-    Vector3 ExtractEulerZYZ(Matrix4x4 mat, out EulerResult eulerRes)
+    public static Vector3 ExtractEulerZYZ(Matrix4x4 mat, out EulerResult eulerRes)
     {
         Vector3 res = new Vector3();
 
