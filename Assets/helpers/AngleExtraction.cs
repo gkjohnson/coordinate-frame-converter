@@ -16,8 +16,11 @@ class AngleExtraction {
     }
 
     static float Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
-        int row = i / 3;
-        int col = i % 3;
+
+        // TODO: Apparently we reverse the row and column values? Is Unity
+        // or WildMagic not doing what we expect?
+        int col = i / 3;
+        int row = i % 3;
 
         return mat[row, col];
     }
