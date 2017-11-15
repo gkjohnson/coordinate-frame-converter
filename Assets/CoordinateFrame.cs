@@ -2,32 +2,11 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
-public class CoordinateFrame {
+using Debug = System.Diagnostics.Debug;
 
-    public struct Vector3 {
-        public float x, y, z;
-        public float this[int i] {
-            get {
-                switch (i) {
-                    case 0: return x;
-                    case 1: return y;
-                    case 2: return z;
-                    default:  throw new IndexOutOfRangeException();
-                }
-            }
-            set {
-                switch (i) {
-                    case 0: x = value; break;
-                    case 1: y = value; break;
-                    case 2: z = value; break;
-                    default:  throw new IndexOutOfRangeException();
-                }
-            }
-        }
-
-    }
-    
+public class FrameConversions {
 
     // Description of an axis, such as -X
     public struct Axis {
@@ -37,6 +16,8 @@ public class CoordinateFrame {
         bool _negative;
         public bool negative { get { return _negative; } }
         
+        public int xyzIndex { get { return axis == "X" ? 0 : axis == "Y" ? 1 : 0; } }
+
         public Axis(string axis, bool negative = false) {
             _axis = axis;
             _negative = negative;
@@ -107,9 +88,39 @@ public class CoordinateFrame {
             for (int i = 0; i < 3; i++) dict[axes[i].axis.ToUpper()] = i;
             return dict;
         }
+
+        public string ToString(bool includeSign = false) {
+            string res = "";
+            foreach (Axis a in _axes) res += a.ToString(includeSign);
+            return res;
+        }
     }
 
-    public Vector3 toPosition(AxisSet from, AxisSet to, Vector3 v) {
+    delegate Vector3 EulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
+    static Dictionary<string, EulerExtractionDelegate> _extractionFunctions;
+    static Dictionary<string, EulerExtractionDelegate> extractionFunctions {
+        get {
+            if(_extractionFunctions == null) {
+                _extractionFunctions = new Dictionary<string, EulerExtractionDelegate>();
+                _extractionFunctions["XYZ"] = AngleExtraction.ExtractEulerXYZ;
+                _extractionFunctions["XZY"] = AngleExtraction.ExtractEulerXZY;
+                _extractionFunctions["YXZ"] = AngleExtraction.ExtractEulerYXZ;
+                _extractionFunctions["YZX"] = AngleExtraction.ExtractEulerYZX;
+                _extractionFunctions["ZXY"] = AngleExtraction.ExtractEulerZXY;
+                _extractionFunctions["ZYX"] = AngleExtraction.ExtractEulerZYX;
+                _extractionFunctions["XYX"] = AngleExtraction.ExtractEulerXYX;
+                _extractionFunctions["XZX"] = AngleExtraction.ExtractEulerXZX;
+                _extractionFunctions["YXY"] = AngleExtraction.ExtractEulerYXY;
+                _extractionFunctions["YZY"] = AngleExtraction.ExtractEulerYZY;
+                _extractionFunctions["ZXZ"] = AngleExtraction.ExtractEulerZXZ;
+                _extractionFunctions["ZYZ"] = AngleExtraction.ExtractEulerZYZ;
+            }
+
+            return _extractionFunctions;
+        }
+    }
+
+    public static Vector3 ToPosition(AxisSet from, AxisSet to, Vector3 v) {
         Vector3 res = new Vector3();
         for(int i = 0; i < 3; i ++) {
             Axis fromAxis = from[i];
@@ -121,5 +132,32 @@ public class CoordinateFrame {
         return res;
     }
 
+    public static Quaternion ToQuaterion(AxisSet order, Vector3 euler) {
+        Quaternion res = new Quaternion();
 
+        for(int i = 0; i < 3; i ++) {
+            Vector3 angles = Vector3.zero;
+            Axis axis = order[i];
+            angles[axis.xyzIndex] = axis.negative ? -euler[i] : euler[i];
+
+            res *= Quaternion.Euler(angles);
+        }
+        return res;
+    }
+
+    public static Vector3 ExtractEulerAngles(AxisSet order, Quaternion quat) {
+        Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, quat, Vector3.one);
+        AngleExtraction.EulerResult eu;
+
+        Vector3 res = extractionFunctions[order.ToString()](mat, out eu);
+        for(int i = 0; i < 3; i ++) {
+            if (order[i].negative) res[i] *= -1;
+        }
+        return res;
+    }
+
+    public static Vector3 ToEulerOrder(AxisSet from, AxisSet to, Vector3 euler) {
+        Quaternion quat = ToQuaterion(from, euler);
+        return ExtractEulerAngles(to, quat);
+    }
 }
