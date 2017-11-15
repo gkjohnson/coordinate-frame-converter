@@ -6,7 +6,7 @@
 //
 // File Version: 5.0.2 (2012/07/29)
 
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerXYZ(out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -24,10 +24,10 @@ Vector3 ExtractEulerXYZ(out EulerResult eulerRes)
             // y_angle = asin(r02)
             // x_angle = atan2(-r12,r22)
             // z_angle = atan2(-r01,r00)
-            yAngle = Mathf.Asin(mat[2]);
-            xAngle = Mathf.ATan2(-mat[5], mat[8]);
-            zAngle = Mathf.ATan2(-mat[1], mat[0]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(mat[2]);
+            res[0] = Mathf.ATan2(-mat[5], mat[8]);
+            res[2] = Mathf.ATan2(-mat[1], mat[0]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -35,10 +35,10 @@ Vector3 ExtractEulerXYZ(out EulerResult eulerRes)
             // y_angle = -pi/2
             // z_angle - x_angle = atan2(r10,r11)
             // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-            yAngle = -Mathf.HALF_PI;
-            xAngle = -Mathf.ATan2(mat[3], mat[4]);
-            zAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = -Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(mat[3], mat[4]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -47,14 +47,14 @@ Vector3 ExtractEulerXYZ(out EulerResult eulerRes)
         // y_angle = +pi/2
         // z_angle + x_angle = atan2(r10,r11)
         // WARNING.  The solutions is not unique.  Choosing z_angle = 0.
-        yAngle = Mathf.HALF_PI;
-        xAngle = Mathf.ATan2(mat[3], mat[4]);
-        zAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(mat[3], mat[4]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerXZY(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -72,10 +72,10 @@ Vector3 ExtractEulerXZY(Matrix3 mat, out EulerResult eulerRes)
             // z_angle = asin(-r01)
             // x_angle = atan2(r21,r11)
             // y_angle = atan2(r02,r00)
-            zAngle = Mathf.Asin(-mat[1]);
-            xAngle = Mathf.ATan2(mat[7], mat[4]);
-            yAngle = Mathf.ATan2(mat[2], mat[0]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(-mat[1]);
+            res[0] = Mathf.ATan2(mat[7], mat[4]);
+            res[2] = Mathf.ATan2(mat[2], mat[0]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -83,10 +83,10 @@ Vector3 ExtractEulerXZY(Matrix3 mat, out EulerResult eulerRes)
             // z_angle = +pi/2
             // y_angle - x_angle = atan2(-r20,r22)
             // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-            zAngle = Mathf.HALF_PI;
-            xAngle = -Mathf.ATan2(-mat[6] ,mat[8]);
-            yAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(-mat[6] ,mat[8]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -95,14 +95,14 @@ Vector3 ExtractEulerXZY(Matrix3 mat, out EulerResult eulerRes)
         // z_angle = -pi/2
         // y_angle + x_angle = atan2(-r20,r22)
         // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-        zAngle = -Mathf.HALF_PI;
-        xAngle = Mathf.ATan2(-mat[6], mat[8]);
-        yAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = -Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(-mat[6], mat[8]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerYXZ(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -120,10 +120,10 @@ Vector3 ExtractEulerYXZ(Matrix3 mat, out EulerResult eulerRes)
             // x_angle = asin(-r12)
             // y_angle = atan2(r02,r22)
             // z_angle = atan2(r10,r11)
-            xAngle = Mathf.Asin(-mat[5]);
-            yAngle = Mathf.ATan2(mat[2], mat[8]);
-            zAngle = Mathf.ATan2(mat[3], mat[4]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(-mat[5]);
+            res[0] = Mathf.ATan2(mat[2], mat[8]);
+            res[2] = Mathf.ATan2(mat[3], mat[4]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -131,10 +131,10 @@ Vector3 ExtractEulerYXZ(Matrix3 mat, out EulerResult eulerRes)
             // x_angle = +pi/2
             // z_angle - y_angle = atan2(-r01,r00)
             // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-            xAngle = Mathf.HALF_PI;
-            yAngle = -Mathf.ATan2(-mat[1], mat[0]);
-            zAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(-mat[1], mat[0]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -143,14 +143,14 @@ Vector3 ExtractEulerYXZ(Matrix3 mat, out EulerResult eulerRes)
         // x_angle = -pi/2
         // z_angle + y_angle = atan2(-r01,r00)
         // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-        xAngle = -Mathf.HALF_PI;
-        yAngle = Mathf.ATan2(-mat[1], mat[0]);
-        zAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = -Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(-mat[1], mat[0]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerYZX(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -168,10 +168,10 @@ Vector3 ExtractEulerYZX(Matrix3 mat, out EulerResult eulerRes)
             // z_angle = asin(r10)
             // y_angle = atan2(-r20,r00)
             // x_angle = atan2(-r12,r11)
-            zAngle = Mathf.Asin(mat[3]);
-            yAngle = Mathf.ATan2(-mat[6], mat[0]);
-            xAngle = Mathf.ATan2(-mat[5], mat[4]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(mat[3]);
+            res[0] = Mathf.ATan2(-mat[6], mat[0]);
+            res[2] = Mathf.ATan2(-mat[5], mat[4]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -179,10 +179,10 @@ Vector3 ExtractEulerYZX(Matrix3 mat, out EulerResult eulerRes)
             // z_angle = -pi/2
             // x_angle - y_angle = atan2(r21,r22)
             // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-            zAngle = -Mathf.HALF_PI;
-            yAngle = -Mathf.ATan2(mat[7], mat[8]);
-            xAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = -Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(mat[7], mat[8]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -191,14 +191,14 @@ Vector3 ExtractEulerYZX(Matrix3 mat, out EulerResult eulerRes)
         // z_angle = +pi/2
         // x_angle + y_angle = atan2(r21,r22)
         // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-        zAngle = Mathf.HALF_PI;
-        yAngle = Mathf.ATan2(mat[7], mat[8]);
-        xAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(mat[7], mat[8]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerZXY(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -216,10 +216,10 @@ Vector3 ExtractEulerZXY(Matrix3 mat, out EulerResult eulerRes)
             // x_angle = asin(r21)
             // z_angle = atan2(-r01,r11)
             // y_angle = atan2(-r20,r22)
-            xAngle = Mathf.Asin(mat[7]);
-            zAngle = Mathf.ATan2(-mat[1], mat[4]);
-            yAngle = Mathf.ATan2(-mat[6], mat[8]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(mat[7]);
+            res[0] = Mathf.ATan2(-mat[1], mat[4]);
+            res[2] = Mathf.ATan2(-mat[6], mat[8]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -227,10 +227,10 @@ Vector3 ExtractEulerZXY(Matrix3 mat, out EulerResult eulerRes)
             // x_angle = -pi/2
             // y_angle - z_angle = atan2(r02,r00)
             // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-            xAngle = -Mathf.HALF_PI;
-            zAngle = -Mathf.ATan2(mat[2], mat[0]);
-            yAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = -Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(mat[2], mat[0]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -239,14 +239,14 @@ Vector3 ExtractEulerZXY(Matrix3 mat, out EulerResult eulerRes)
         // x_angle = +pi/2
         // y_angle + z_angle = atan2(r02,r00)
         // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-        xAngle = Mathf.HALF_PI;
-        zAngle = Mathf.ATan2(mat[2], mat[0]);
-        yAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(mat[2], mat[0]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerZYX(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -264,10 +264,10 @@ Vector3 ExtractEulerZYX(Matrix3 mat, out EulerResult eulerRes)
             // y_angle = asin(-r20)
             // z_angle = atan2(r10,r00)
             // x_angle = atan2(r21,r22)
-            yAngle = Mathf.Asin(-mat[6]);
-            zAngle = Mathf.ATan2(mat[3], mat[0]);
-            xAngle = Mathf.ATan2(mat[7], mat[8]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Asin(-mat[6]);
+            res[0] = Mathf.ATan2(mat[3], mat[0]);
+            res[2] = Mathf.ATan2(mat[7], mat[8]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
@@ -275,10 +275,10 @@ Vector3 ExtractEulerZYX(Matrix3 mat, out EulerResult eulerRes)
             // y_angle = +pi/2
             // x_angle - z_angle = atan2(r01,r02)
             // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-            yAngle = Mathf.HALF_PI;
-            zAngle = -Mathf.ATan2(mat[1], mat[2]);
-            xAngle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.HALF_PI;
+            res[0] = -Mathf.ATan2(mat[1], mat[2]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
@@ -287,14 +287,14 @@ Vector3 ExtractEulerZYX(Matrix3 mat, out EulerResult eulerRes)
         // y_angle = -pi/2
         // x_angle + z_angle = atan2(-r01,-r02)
         // WARNING.  The solution is not unique.  Choosing x_angle = 0;
-        yAngle = -Mathf.HALF_PI;
-        zAngle = Mathf.ATan2(-mat[1], -mat[2]);
-        xAngle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = -Mathf.HALF_PI;
+        res[0] = Mathf.ATan2(-mat[1], -mat[2]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerXYX(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -312,33 +312,33 @@ Vector3 ExtractEulerXYX(Matrix3 mat, out EulerResult eulerRes)
             // y_angle  = acos(r00)
             // x0_angle = atan2(r10,-r20)
             // x1_angle = atan2(r01,r02)
-            yAngle = Mathf.Acos(mat[0]);
-            x0Angle = Mathf.ATan2(mat[3], -mat[6]);
-            x1Angle = Mathf.ATan2(mat[1], mat[2]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[0]);
+            res[0] = Mathf.ATan2(mat[3], -mat[6]);
+            res[2] = Mathf.ATan2(mat[1], mat[2]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
         {
             // Not a unique solution:  x1_angle - x0_angle = atan2(-r12,r11)
-            yAngle = Mathf.PI;
-            x0Angle = -Mathf.ATan2(-mat[5], mat[4]);
-            x1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(-mat[5], mat[4]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else
     {
         // Not a unique solution:  x1_angle + x0_angle = atan2(-r12,r11)
-        yAngle = 0;
-        x0Angle = Mathf.ATan2(-mat[5], mat[4]);
-        x1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(-mat[5], mat[4]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerXZX(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -356,33 +356,33 @@ Vector3 ExtractEulerXZX(Matrix3 mat, out EulerResult eulerRes)
             // z_angle  = acos(r00)
             // x0_angle = atan2(r20,r10)
             // x1_angle = atan2(r02,-r01)
-            zAngle = Mathf.Acos(mat[0]);
-            x0Angle = Mathf.ATan2(mat[6], mat[3]);
-            x1Angle = Mathf.ATan2(mat[2], -mat[1]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[0]);
+            res[0] = Mathf.ATan2(mat[6], mat[3]);
+            res[2] = Mathf.ATan2(mat[2], -mat[1]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
         {
             // Not a unique solution:  x1_angle - x0_angle = atan2(r21,r22)
-            zAngle = Mathf.PI;
-            x0Angle = -Mathf.ATan2(mat[7], mat[8]);
-            x1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(mat[7], mat[8]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else
     {
         // Not a unique solution:  x1_angle + x0_angle = atan2(r21,r22)
-        zAngle = 0;
-        x0Angle = Mathf.ATan2(mat[7], mat[8]);
-        x1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(mat[7], mat[8]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerYXY(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -400,33 +400,33 @@ Vector3 ExtractEulerYXY(Matrix3 mat, out EulerResult eulerRes)
             // x_angle  = acos(r11)
             // y0_angle = atan2(r01,r21)
             // y1_angle = atan2(r10,-r12)
-            xAngle = Mathf.Acos(mat[4]);
-            y0Angle = Mathf.ATan2(mat[1], mat[7]);
-            y1Angle = Mathf.ATan2(mat[3], -mat[5]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[4]);
+            res[0] = Mathf.ATan2(mat[1], mat[7]);
+            res[2] = Mathf.ATan2(mat[3], -mat[5]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
         {
             // Not a unique solution:  y1_angle - y0_angle = atan2(r02,r00)
-            xAngle = Mathf.PI;
-            y0Angle = -Mathf.ATan2(mat[2], mat[0]);
-            y1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(mat[2], mat[0]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else
     {
         // Not a unique solution:  y1_angle + y0_angle = atan2(r02,r00)
-        xAngle = 0;
-        y0Angle = Mathf.ATan2(mat[2], mat[0]);
-        y1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(mat[2], mat[0]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerYZY(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -444,33 +444,33 @@ Vector3 ExtractEulerYZY(Matrix3 mat, out EulerResult eulerRes)
             // z_angle  = acos(r11)
             // y0_angle = atan2(r21,-r01)
             // y1_angle = atan2(r12,r10)
-            zAngle = Mathf.Acos(mat[4]);
-            y0Angle = Mathf.ATan2(mat[7], -mat[1]);
-            y1Angle = Mathf.ATan2(mat[5], mat[3]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[4]);
+            res[0] = Mathf.ATan2(mat[7], -mat[1]);
+            res[2] = Mathf.ATan2(mat[5], mat[3]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
         {
             // Not a unique solution:  y1_angle - y0_angle = atan2(-r20,r22)
-            zAngle = Mathf.PI;
-            y0Angle = -Mathf.ATan2(-mat[6], mat[8]);
-            y1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(-mat[6], mat[8]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else
     {
         // Not a unique solution:  y1_angle + y0_angle = atan2(-r20,r22)
-        zAngle = 0;
-        y0Angle = Mathf.ATan2(-mat[6], mat[8]);
-        y1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(-mat[6], mat[8]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerZXZ(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -488,33 +488,33 @@ Vector3 ExtractEulerZXZ(Matrix3 mat, out EulerResult eulerRes)
             // x_angle  = acos(r22)
             // z0_angle = atan2(r02,-r12)
             // z1_angle = atan2(r20,r21)
-            xAngle = Mathf.Acos(mat[8]);
-            z0Angle = Mathf.ATan2(mat[2], -mat[5]);
-            z1Angle = Mathf.ATan2(mat[6], mat[7]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[8]);
+            res[0] = Mathf.ATan2(mat[2], -mat[5]);
+            res[2] = Mathf.ATan2(mat[6], mat[7]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else
         {
             // Not a unique solution:  z1_angle - z0_angle = atan2(-r01,r00)
-            xAngle = Mathf.PI;
-            z0Angle = -Mathf.ATan2(-mat[1], mat[0]);
-            z1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(-mat[1], mat[0]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else
     {
         // Not a unique solution:  z1_angle + z0_angle = atan2(-r01,r00)
-        xAngle = 0;
-        z0Angle = Mathf.ATan2(-mat[1], mat[0]);
-        z1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(-mat[1], mat[0]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
-//----------------------------------------------------------------------------
+
 Vector3 ExtractEulerZYZ(Matrix3 mat, out EulerResult eulerRes)
 {
     Vector3 res = new Vector3();
@@ -532,29 +532,29 @@ Vector3 ExtractEulerZYZ(Matrix3 mat, out EulerResult eulerRes)
             // y_angle  = acos(r22)
             // z0_angle = atan2(r12,r02)
             // z1_angle = atan2(r21,-r20)
-            yAngle = Mathf.Acos(mat[8]);
-            z0Angle = Mathf.ATan2(mat[5], mat[2]);
-            z1Angle = Mathf.ATan2(mat[7], -mat[6]);
-            eulerRes = EA_UNIQUE;
+            res[1] = Mathf.Acos(mat[8]);
+            res[0] = Mathf.ATan2(mat[5], mat[2]);
+            res[2] = Mathf.ATan2(mat[7], -mat[6]);
+            eulerRes = EulerResult.EA_UNIQUE;
             return res;
         }
         else // r22 = -1
         {
             // Not a unique solution:  z1_angle - z0_angle = atan2(r10,r11)
-            yAngle = Mathf.PI;
-            z0Angle = -Mathf.ATan2(mat[3], mat[4]);
-            z1Angle = 0;
-            eulerRes = EA_NOT_UNIQUE_DIF;
+            res[1] = Mathf.PI;
+            res[0] = -Mathf.ATan2(mat[3], mat[4]);
+            res[2] = 0;
+            eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
             return res;
         }
     }
     else // r22 = +1
     {
         // Not a unique solution:  z1_angle + z0_angle = atan2(r10,r11)
-        yAngle = 0;
-        z0Angle = Mathf.ATan2(mat[3], mat[4]);
-        z1Angle = 0;
-        eulerRes = EA_NOT_UNIQUE_SUM;
+        res[1] = 0;
+        res[0] = Mathf.ATan2(mat[3], mat[4]);
+        res[2] = 0;
+        eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
         return res;
     }
 }
