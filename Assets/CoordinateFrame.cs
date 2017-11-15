@@ -116,6 +116,22 @@ public class FrameConversions {
         }
     }
 
+    public class CoordinateFrameConverter {
+        CoordinateFrame _fromFrame;
+        CoordinateFrame _toFrame;
+
+        CoordinateFrameConverter(CoordinateFrame from, CoordinateFrame to) {
+            _fromFrame = from;
+            _toFrame = to;
+        }
+
+        CoordinateFrameConverter(string fromAxis, string fromRotation, string toAxis, string toRotation)
+            :this(new CoordinateFrame(fromAxis, fromRotation), new CoordinateFrame(toAxis, toRotation)) { }
+
+        public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
+        public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerOrder(_toFrame, euler); }
+    }
+
     delegate Vector3 EulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
     static Dictionary<string, EulerExtractionDelegate> _extractionFunctions;
     static Dictionary<string, EulerExtractionDelegate> extractionFunctions {
