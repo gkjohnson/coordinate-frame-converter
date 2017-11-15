@@ -101,19 +101,28 @@ public class FrameConversions {
     static Dictionary<string, EulerExtractionDelegate> extractionFunctions {
         get {
             if(_extractionFunctions == null) {
+                // Wrap all the functions to return *= -1 the value of the extraction function
+                // The results seem to be negative. Also convert to degrees because we're considering
+                // euler angles as degrees everywhere else
+                // TODO: Is this because Unity's arrays aren't what we expect?
+                Func<EulerExtractionDelegate, EulerExtractionDelegate> _wrapFunc = f => {
+                    EulerExtractionDelegate res = delegate(Matrix4x4 m, out AngleExtraction.EulerResult eu) { return -Mathf.Rad2Deg * f(m, out eu); };
+                    return res;
+                };
+
                 _extractionFunctions = new Dictionary<string, EulerExtractionDelegate>();
-                _extractionFunctions["XYZ"] = AngleExtraction.ExtractEulerXYZ;
-                _extractionFunctions["XZY"] = AngleExtraction.ExtractEulerXZY;
-                _extractionFunctions["YXZ"] = AngleExtraction.ExtractEulerYXZ;
-                _extractionFunctions["YZX"] = AngleExtraction.ExtractEulerYZX;
-                _extractionFunctions["ZXY"] = AngleExtraction.ExtractEulerZXY;
-                _extractionFunctions["ZYX"] = AngleExtraction.ExtractEulerZYX;
-                _extractionFunctions["XYX"] = AngleExtraction.ExtractEulerXYX;
-                _extractionFunctions["XZX"] = AngleExtraction.ExtractEulerXZX;
-                _extractionFunctions["YXY"] = AngleExtraction.ExtractEulerYXY;
-                _extractionFunctions["YZY"] = AngleExtraction.ExtractEulerYZY;
-                _extractionFunctions["ZXZ"] = AngleExtraction.ExtractEulerZXZ;
-                _extractionFunctions["ZYZ"] = AngleExtraction.ExtractEulerZYZ;
+                _extractionFunctions["XYZ"] = _wrapFunc(AngleExtraction.ExtractEulerXYZ);
+                _extractionFunctions["XZY"] = _wrapFunc(AngleExtraction.ExtractEulerXZY);
+                _extractionFunctions["YXZ"] = _wrapFunc(AngleExtraction.ExtractEulerYXZ);
+                _extractionFunctions["YZX"] = _wrapFunc(AngleExtraction.ExtractEulerYZX);
+                _extractionFunctions["ZXY"] = _wrapFunc(AngleExtraction.ExtractEulerZXY);
+                _extractionFunctions["ZYX"] = _wrapFunc(AngleExtraction.ExtractEulerZYX);
+                _extractionFunctions["XYX"] = _wrapFunc(AngleExtraction.ExtractEulerXYX);
+                _extractionFunctions["XZX"] = _wrapFunc(AngleExtraction.ExtractEulerXZX);
+                _extractionFunctions["YXY"] = _wrapFunc(AngleExtraction.ExtractEulerYXY);
+                _extractionFunctions["YZY"] = _wrapFunc(AngleExtraction.ExtractEulerYZY);
+                _extractionFunctions["ZXZ"] = _wrapFunc(AngleExtraction.ExtractEulerZXZ);
+                _extractionFunctions["ZYZ"] = _wrapFunc(AngleExtraction.ExtractEulerZYZ);
             }
 
             return _extractionFunctions;
@@ -132,25 +141,27 @@ public class FrameConversions {
         return res;
     }
 
+    // Takes euler angles in degrees
     public static Quaternion ToQuaterion(AxisSet order, Vector3 euler) {
-        Quaternion res = new Quaternion();
+        Quaternion res = Quaternion.identity;
 
         for(int i = 0; i < 3; i ++) {
             Vector3 angles = Vector3.zero;
             Axis axis = order[i];
             angles[axis.xyzIndex] = axis.negative ? -euler[i] : euler[i];
-
-            res *= Quaternion.Euler(angles);
+           
+            res = Quaternion.Euler(angles) * res;
         }
         return res;
     }
 
+    // outputs euler angles in degrees
     public static Vector3 ExtractEulerAngles(AxisSet order, Quaternion quat) {
         Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, quat, Vector3.one);
         AngleExtraction.EulerResult eu;
 
         Vector3 res = extractionFunctions[order.ToString()](mat, out eu);
-        for(int i = 0; i < 3; i ++) {
+        for (int i = 0; i < 3; i ++) {
             if (order[i].negative) res[i] *= -1;
         }
         return res;
