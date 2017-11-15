@@ -122,9 +122,16 @@ public class FrameConversions {
 
     public class CoordinateFrameConverter {
         CoordinateFrame _fromFrame, _toFrame;
+        CoordinateFrameConverter _inverse;
 
         public CoordinateFrame from { get { return _fromFrame; } }
         public CoordinateFrame to { get { return _toFrame; } }
+        public CoordinateFrameConverter inverse {
+            get {
+                if (_inverse == null) _inverse = new CoordinateFrameConverter(_toFrame, _fromFrame);
+                return _inverse;
+            }
+        }
 
         CoordinateFrameConverter(CoordinateFrame from, CoordinateFrame to) {
             _fromFrame = from;
