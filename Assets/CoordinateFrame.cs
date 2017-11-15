@@ -96,6 +96,26 @@ public class FrameConversions {
         }
     }
 
+    public class CoordinateFrame {
+        AxisSet _axes, _rotationOrder;
+        public CoordinateFrame(string lufAxes, string rotationOrder) {
+            _axes = new AxisSet(lufAxes);
+            _rotationOrder = new AxisSet(rotationOrder);
+        }
+
+        public Vector3 ToPosition(CoordinateFrame other, Vector3 v) {
+            return FrameConversions.ToPosition(_axes, other._axes, v);
+        }
+
+        public Quaternion ToQuaternion(Vector3 euler) {
+            return FrameConversions.ToQuaterion(_rotationOrder, euler);
+        }
+
+        public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 euler) {
+            throw new NotImplementedException();
+        }
+    }
+
     delegate Vector3 EulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
     static Dictionary<string, EulerExtractionDelegate> _extractionFunctions;
     static Dictionary<string, EulerExtractionDelegate> extractionFunctions {
