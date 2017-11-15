@@ -15,3 +15,12 @@ Which order Euler angles are applied
 
 Whether positive rotation is clockwise or counterclockwise about the "right hand rule"
 
+## Classes
+### FrameConversions
+TODO...
+
+### CoordinateFrame
+TODO...
+
+### CoordinateFrameConverter
+TODO...
