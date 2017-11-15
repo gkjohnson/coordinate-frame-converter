@@ -16,7 +16,7 @@ public class FrameConversions {
         bool _negative;
         public bool negative { get { return _negative; } }
         
-        public int xyzIndex { get { return axis == "X" ? 0 : axis == "Y" ? 1 : 0; } }
+        public int xyzIndex { get { return axis == "X" ? 0 : axis == "Y" ? 1 : 2; } }
 
         public Axis(string axis, bool negative = false) {
             _axis = axis;
