@@ -98,6 +98,10 @@ public class FrameConversions {
 
     public class CoordinateFrame {
         AxisSet _axes, _rotationOrder;
+
+        public string Axes { get { return _axes.ToString(true); } }
+        public string RotationOrder { get { return _rotationOrder.ToString(true); } }
+
         public CoordinateFrame(string lufAxes, string rotationOrder) {
             _axes = new AxisSet(lufAxes);
             _rotationOrder = new AxisSet(rotationOrder);
@@ -117,8 +121,10 @@ public class FrameConversions {
     }
 
     public class CoordinateFrameConverter {
-        CoordinateFrame _fromFrame;
-        CoordinateFrame _toFrame;
+        CoordinateFrame _fromFrame, _toFrame;
+
+        public CoordinateFrame from { get { return _fromFrame; } }
+        public CoordinateFrame to { get { return _toFrame; } }
 
         CoordinateFrameConverter(CoordinateFrame from, CoordinateFrame to) {
             _fromFrame = from;
