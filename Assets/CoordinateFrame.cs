@@ -44,9 +44,17 @@ public class FrameConversions {
         public Axis up      { get { return _axes[1]; } }
         public Axis forward { get { return _axes[2]; } }
 
+        private AxisSet() { }
+
         public AxisSet(string axes, bool guaranteeUniqueness = true) {
             _axes = SanitizeAxisDescription(axes, guaranteeUniqueness);
             _axisToIndex = GetIndexMap(_axes);
+        }
+
+        public string ToString(bool includeSign = false) {
+            string res = "";
+            foreach (Axis a in _axes) res += a.ToString(includeSign);
+            return res;
         }
 
         Axis[] SanitizeAxisDescription(string s, bool guaranteeUniqueness = true) {
@@ -88,12 +96,6 @@ public class FrameConversions {
             for (int i = 0; i < 3; i++) dict[axes[i].axis.ToUpper()] = i;
             return dict;
         }
-
-        public string ToString(bool includeSign = false) {
-            string res = "";
-            foreach (Axis a in _axes) res += a.ToString(includeSign);
-            return res;
-        }
     }
 
     public class CoordinateFrame {
@@ -101,6 +103,8 @@ public class FrameConversions {
 
         public string Axes { get { return _axes.ToString(true); } }
         public string RotationOrder { get { return _rotationOrder.ToString(true); } }
+
+        private CoordinateFrame() { }
 
         public CoordinateFrame(string lufAxes, string rotationOrder) {
             _axes = new AxisSet(lufAxes);
@@ -133,12 +137,14 @@ public class FrameConversions {
             }
         }
 
-        CoordinateFrameConverter(CoordinateFrame from, CoordinateFrame to) {
+        private CoordinateFrameConverter() { }
+
+        public CoordinateFrameConverter(CoordinateFrame from, CoordinateFrame to) {
             _fromFrame = from;
             _toFrame = to;
         }
 
-        CoordinateFrameConverter(string fromAxis, string fromRotation, string toAxis, string toRotation)
+        public CoordinateFrameConverter(string fromAxis, string fromRotation, string toAxis, string toRotation)
             :this(new CoordinateFrame(fromAxis, fromRotation), new CoordinateFrame(toAxis, toRotation)) { }
 
         public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
