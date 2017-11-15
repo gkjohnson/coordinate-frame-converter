@@ -53,17 +53,17 @@ public class FrameConversions {
             s = s.ToUpper();
 
             // Ensure we're in the right format
-            Regex rgx = new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])");
-            Debug.Assert(rgx.IsMatch(s));
+            Debug.Assert(new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s));
 
             // Make sure we have three axes
-            var matches = rgx.Matches(s);
+            var matches = new Regex("[+-]?[XYZ]").Matches(s);
             Debug.Assert(matches.Count == 3);
 
             // Create the axes
             Axis[] axes = new Axis[3];
             for (int i = 0; i < matches.Count; i++) {
                 string str = matches[i].Value;
+
                 bool negative = str.Contains("-");
                 string axis = str.Replace("-", "").Replace("+", "");
 
