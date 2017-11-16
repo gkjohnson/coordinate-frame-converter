@@ -11,12 +11,12 @@ public class FrameConversions {
     // Description of an axis, such as -X
     public struct Axis {
         string _axis;
-        public string axis { get { return _axis; } }
+        public string name { get { return _axis; } }
 
         bool _negative;
         public bool negative { get { return _negative; } }
         
-        public int xyzIndex { get { return axis == "X" ? 0 : axis == "Y" ? 1 : 2; } }
+        public int xyzIndex { get { return name == "X" ? 0 : name == "Y" ? 1 : 2; } }
 
         public Axis(string axis, bool negative = false) {
             _axis = axis;
@@ -24,9 +24,15 @@ public class FrameConversions {
         }
 
         public string ToString(bool includeSign = false) {
-            string str = axis;
+            string str = name;
             if (includeSign) str = (negative ? "-" : "+") + str;
             return str;
+        }
+
+        public static Axis operator -(Axis axis) {
+            Axis a = axis;
+            a._negative = !a._negative;
+            return a;
         }
     }
 
@@ -41,10 +47,18 @@ public class FrameConversions {
         public int this[string a] { get { return _axisToIndex[a.ToUpper()]; } }
 
         public Axis left    { get { return _axes[0]; } }
+        public Axis right   { get { return -_axes[0]; } }
         public Axis up      { get { return _axes[1]; } }
+        public Axis down    { get { return -_axes[1]; } }
         public Axis forward { get { return _axes[2]; } }
+        public Axis back    { get { return -_axes[2]; } }
 
         private AxisSet() { }
+
+        internal AxisSet(Axis left, Axis up, Axis forward) {
+            _axes = new Axis[] { left, up, forward };
+            _axisToIndex = GetIndexMap(_axes);
+        }
 
         public AxisSet(string axes, bool guaranteeUniqueness = true) {
             _axes = SanitizeAxisDescription(axes, guaranteeUniqueness);
@@ -82,7 +96,7 @@ public class FrameConversions {
             int redundantCount = 0;
             foreach (Axis a in axes) {
                 foreach (Axis b in axes) {
-                    redundantCount += a.axis == b.axis ? 1 : 0;
+                    redundantCount += a.name == b.name ? 1 : 0;
                 }
             }
 
@@ -93,7 +107,7 @@ public class FrameConversions {
 
         Dictionary<string, int> GetIndexMap(Axis[] axes) {
             var dict = new Dictionary<string, int>();
-            for (int i = 0; i < 3; i++) dict[axes[i].axis.ToUpper()] = i;
+            for (int i = 0; i < 3; i++) dict[axes[i].name.ToUpper()] = i;
             return dict;
         }
     }
@@ -116,7 +130,7 @@ public class FrameConversions {
         }
 
         public Quaternion ToQuaternion(Vector3 euler) {
-            return FrameConversions.ToQuaterion(_rotationOrder, euler);
+            return FrameConversions.ToQuaternion(_rotationOrder, euler);
         }
 
         public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 euler) {
@@ -188,7 +202,7 @@ public class FrameConversions {
         Vector3 res = new Vector3();
         for(int i = 0; i < 3; i ++) {
             Axis fromAxis = from[i];
-            int toIndex = to[fromAxis.axis];
+            int toIndex = to[fromAxis.name];
             Axis toAxis = to[toIndex];
 
             res[toIndex] = fromAxis.negative == toAxis.negative ? v[i] : -v[i];
@@ -197,7 +211,7 @@ public class FrameConversions {
     }
 
     // Takes euler angles in degrees
-    public static Quaternion ToQuaterion(AxisSet order, Vector3 euler) {
+    public static Quaternion ToQuaternion(AxisSet order, Vector3 euler) {
         Quaternion res = Quaternion.identity;
 
         for(int i = 0; i < 3; i ++) {
@@ -223,7 +237,7 @@ public class FrameConversions {
     }
 
     public static Vector3 ToEulerOrder(AxisSet from, AxisSet to, Vector3 euler) {
-        Quaternion quat = ToQuaterion(from, euler);
+        Quaternion quat = ToQuaternion(from, euler);
         return ExtractEulerAngles(to, quat);
     }
 }
