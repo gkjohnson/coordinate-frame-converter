@@ -87,8 +87,6 @@ public class Tests : MonoBehaviour {
                     AreVectorsEquivalent(qe * Vector3.right,    qback * Vector3.right,      1e-6f);
 
                 if (!equal) {
-                    Debug.Log(o1.ToString(true) + " could not convert to " + o2.ToString(true));
-
                     Debug.Log((qe * Vector3.forward).ToString("0.000000") + " : " + (qback * Vector3.forward).ToString("0.000000"));
                     Debug.Log(e.ToString("0.0000") + " > " + to.ToString("0.0000") + " > " + back.ToString("0.0000"));
                     issues++;
