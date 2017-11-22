@@ -29,6 +29,8 @@ Rotation order is considered to be applied in the specified order about the axes
 #### Rotation Direction
 Rotations are considered to be applied using the right-hand rule, so it's necessary to negate the axis to apply the left hand rule, or counter-clockwise rotations.
 
+In simple terms, `+` indicates right-hand-rule with thumb in the positive direction of the axis, while `-` indicates left-hand-rule in the direction of hte axis.
+
 Unity's rotation order would then be considered to be `-Z`, `-Y`, `-X`.
 
 ### Transforms
