@@ -35,39 +35,61 @@ Unity's rotation order would then be considered to be `-Z`, `-Y`, `-X`.
 #### Example Frames
 ##### Frame1
 position: `+X, +Y, -Z`
+```cs
+Y 
+|   Z
+| ／
+.-------X
+```
 
 rotation: `-Z, -X, -Y`
-
-```
-      Y 
-      |   Z
-      | ／
-      .-------X
+```cs
+(-3)
+ |   (-1)
+ | ／
+ .-------(-2)
 ```
 
 ##### Frame2
 position: `+Y, -Z, +X`
-
-rotation: `+X, +Z, +Y`
-
-```
+```cs
       .-------Y
    ／ |
  X    |
       Z
 ```
 
+rotation: `+X, +Z, +Y`
+```cs
+      .-------(+3)
+   ／ |
+(+1)  |
+     (+2)
+```
+
 #### Position Transforms
-```js
+```cs
 // Convert a vector as specified in the original coordinate
 // frame's conventions into one specified in the new coordinate
 // frame's conventions
 Frame1        =>  Frame2
-(X, Y, Z)         (-Z, X, -Y)
+(+X, +Y, +Z)      (-Z, +X, -Y)
 
 Frame2        =>  Frame1
-(X, Y, Z)         (Y, -Z, -X)
+(+X, +Y, +Z)      (+Y, -Z, -X)
 ```
 
 #### Rotation Transforms
-TODO
+
+```cs
+Frame1OrderInFrame1Axes       =>    Frame1OrderInFrame2Axes
+// Z to X (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
+// X to Y (same notional axis) - to - (in the same direction)
+// Y to Z (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
+(-Z, -X, -Y)                        (+X, -Y, +Z)
+
+(-3)                                      .-------(-2)
+ |  (-1)                               ／ |
+ | ／                               (+1)  |
+ .-------(-2)                            (+3)
+```
