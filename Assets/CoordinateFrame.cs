@@ -165,21 +165,24 @@ public class FrameConversions {
         public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerOrder(_toFrame, euler); }
     }
 
-    delegate Vector3 EulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
-    static Dictionary<string, EulerExtractionDelegate> _extractionFunctions;
-    static Dictionary<string, EulerExtractionDelegate> extractionFunctions {
+    delegate Vector3 QuatEulerExtractionDelegate(Quaternion quat, out AngleExtraction.EulerResult eu);
+    delegate Vector3 RawEulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
+    static Dictionary<string, QuatEulerExtractionDelegate> _extractionFunctions;
+    static Dictionary<string, QuatEulerExtractionDelegate> extractionFunctions {
         get {
             if(_extractionFunctions == null) {
-                // Wrap all the functions to return *= -1 the value of the extraction function
-                // The results seem to be negative. Also convert to degrees because we're considering
-                // euler angles as degrees everywhere else
-                // TODO: Is this because Unity's arrays aren't what we expect?
-                Func<EulerExtractionDelegate, EulerExtractionDelegate> _wrapFunc = f => {
-                    EulerExtractionDelegate res = delegate(Matrix4x4 m, out AngleExtraction.EulerResult eu) { return -Mathf.Rad2Deg * f(m, out eu); };
+                // - Wrap all the functions to return *= -1 the value of the extraction function
+                // because Unity's rotation order is applied as counter clockwise by default
+                // - Wrap the functions so they can have quaternions passed into them directly
+                // - Convert to degrees
+                Func<RawEulerExtractionDelegate, QuatEulerExtractionDelegate> _wrapFunc = f => {
+                    QuatEulerExtractionDelegate res = delegate(Quaternion q, out AngleExtraction.EulerResult eu) {
+                        return Mathf.Rad2Deg * f(Matrix4x4.TRS(Vector3.zero, q, Vector3.one), out eu);
+                    };
                     return res;
                 };
 
-                _extractionFunctions = new Dictionary<string, EulerExtractionDelegate>();
+                _extractionFunctions = new Dictionary<string, QuatEulerExtractionDelegate>();
                 _extractionFunctions["XYZ"] = _wrapFunc(AngleExtraction.ExtractEulerXYZ);
                 _extractionFunctions["XZY"] = _wrapFunc(AngleExtraction.ExtractEulerXZY);
                 _extractionFunctions["YXZ"] = _wrapFunc(AngleExtraction.ExtractEulerYXZ);
@@ -218,7 +221,10 @@ public class FrameConversions {
             Vector3 angles = Vector3.zero;
             Axis axis = order[i];
             angles[axis.xyzIndex] = axis.negative ? -euler[i] : euler[i];
-           
+
+            // Unity's default rotation order is negative
+            angles *= -1;
+
             res = Quaternion.Euler(angles) * res;
         }
         return res;
@@ -226,10 +232,8 @@ public class FrameConversions {
 
     // outputs euler angles in degrees
     public static Vector3 ExtractEulerAngles(AxisSet order, Quaternion quat) {
-        Matrix4x4 mat = Matrix4x4.TRS(Vector3.zero, quat, Vector3.one);
         AngleExtraction.EulerResult eu;
-
-        Vector3 res = extractionFunctions[order.ToString()](mat, out eu);
+        Vector3 res = extractionFunctions[order.ToString()](quat, out eu);
         for (int i = 0; i < 3; i ++) {
             if (order[i].negative) res[i] *= -1;
         }
