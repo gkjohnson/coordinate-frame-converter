@@ -74,14 +74,22 @@ public class Tests : MonoBehaviour {
                 Vector3 e = new Vector3(20, 40, 80);
                 Vector3 to = FrameConversions.ToEulerOrder(o1, o2, e);
                 Vector3 back = FrameConversions.ToEulerOrder(o2, o1, to);
+                
+                Quaternion qe = FrameConversions.ToQuaternion(o1, e);
+                Quaternion qback = FrameConversions.ToQuaternion(o1, back);
 
-                // TODO: The extractions for rotation orders like +X-Z+X can result
-                // non unique euler angles for a rotation, so this check fails. We should
-                // transform basis vectors by the formed quaternion to make sure they're 
-                // pointing in the same direction if the initial test fails
+                // Check if the rotations are the same or if the rotations
+                // have the equivalent effect on transforming vectors
+                bool equal =
+                    AreVectorsEquivalent(e, back, 1e-4f) ||
+                    AreVectorsEquivalent(qe * Vector3.forward,  qback * Vector3.forward,    1e-6f) &&
+                    AreVectorsEquivalent(qe * Vector3.up,       qback * Vector3.up,         1e-6f) &&
+                    AreVectorsEquivalent(qe * Vector3.right,    qback * Vector3.right,      1e-6f);
 
-                if (!AreVectorsEquivalent(e, back)) {
+                if (!equal) {
                     Debug.Log(o1.ToString(true) + " could not convert to " + o2.ToString(true));
+
+                    Debug.Log((qe * Vector3.forward).ToString("0.000000") + " : " + (qback * Vector3.forward).ToString("0.000000"));
                     Debug.Log(e.ToString("0.0000") + " > " + to.ToString("0.0000") + " > " + back.ToString("0.0000"));
                     issues++;
                 }
@@ -92,13 +100,12 @@ public class Tests : MonoBehaviour {
 
     // Checks whether or not the vectors are equivalent, affording some epsilon
     // for vectors representing euler rotations in particular.
-    bool AreVectorsEquivalent(Vector3 a, Vector3 b) {
+    bool AreVectorsEquivalent(Vector3 a, Vector3 b, float eps = 1e-40f) {
         Vector3 delta = a - b;
         delta.x = Mathf.Abs(delta.x);
         delta.y = Mathf.Abs(delta.y);
         delta.z = Mathf.Abs(delta.z);
 
-        float eps = 1e-4f;
         return delta.x < eps && delta.y < eps && delta.z < eps;
     }
 }
