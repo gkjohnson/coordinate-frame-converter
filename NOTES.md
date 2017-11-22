@@ -80,6 +80,7 @@ Frame2        =>  Frame1
 ```
 
 #### Rotation Transforms
+`(sign num)` indicates counter-clock and order of rotation application and 
 
 ```cs
 Frame1OrderInFrame1Axes       =>    Frame1OrderInFrame2Axes
