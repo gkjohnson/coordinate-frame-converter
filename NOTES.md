@@ -83,13 +83,8 @@ Frame2        =>  Frame1
 
 ### Rotation Transforms
 #### Frame2 to Frame1 Euler Angles
-##### Conversion Begin
-```
-ConvertF2ToF1(x,y,z)
-```
-
 ##### Convert
-Convert the rotation order of F1 into F2 so we know how to extract the angles.
+Convert the rotation order of F1 into F2 conventions so we know how to extract the angles.
 ```cs
 Frame1OrderInFrame1Axes       =>    Frame1OrderInFrame2Axes
 // Z to X (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
@@ -103,7 +98,7 @@ Frame1OrderInFrame1Axes       =>    Frame1OrderInFrame2Axes
  .-------(-2)                            (+3)
 ```
 
-##### Extract
+##### Extract Angles in New Order
 ```cs
 // Extract the angles in the order computed order to extract
 // in, then convert back to the appropriate order for the
