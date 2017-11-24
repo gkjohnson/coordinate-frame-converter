@@ -24,3 +24,8 @@ TODO...
 
 ### CoordinateFrameConverter
 TODO...
+
+## TODO
+- [ ] Add accessors for "L", "U", and "F" to retrieve the named axes in those directions. This might make rotation conversions easier.
+- [ ] Add full coordinate frame conversions for euler angle rotations.
+- [ ] Add tests for full coordinate frame rotations
