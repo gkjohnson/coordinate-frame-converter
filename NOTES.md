@@ -89,14 +89,31 @@ Frame2        =>  Frame1
 ##### Convert
 Convert the rotation order of F1 into F2 conventions so we know how to extract the angles.
 ```cs
-// TODO: It maybe be more intuitive to add an intermediate conversion step here
-// that converts the axes to directions, then to the new axes, because that's more
-// or less what's happening here. See "Addressing Axes in Rotation Order" above.
-Frame1OrderInFrame1Axes => Directions            => Substituted Axes                => Frame1OrderInFrame2Axes
+1. Frame1OrderInFrame1Axes
+// The original rotation order of for Frame 1 given Frame 1's
+// axis direction conventions
+(-Z, -X, -Y)
+
+2. Directions
+// We substitued in the original, common representation of the axis
+// directions and conventions, negating where the axes are in the
+// opposite direction
+(-(-F), -(+R), -(+U))
+
+3. Substituted Axes
+// Substitute in the new Frame 2 axes for original axes F, R, and U
+(-(-(+X), -(+(+Y))), -(+(-Z))))
+
+4. Frame1OrderInFrame2Axes
+// Distribute signs
+(+X, -Y, +Z)
+
 // Z to X (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
 // X to Y (same notional axis) - to - (in the same direction)
 // Y to Z (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
-(-Z, -X, -Y)            => (-(-F), -(+R), -(+U)) => (-(-(+X), -(+(+Y))), -(+(-Z)))) => (+X, -Y, +Z)
+
+// This can be tested by using the right hand rule to emulate the rotation order for both
+// frames and verifying that all the rotations are the same between both frames.
 
 (-3)                                      .-------(-2)
  |  (-1)                               ／ |
