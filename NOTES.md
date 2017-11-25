@@ -92,11 +92,11 @@ Convert the rotation order of F1 into F2 conventions so we know how to extract t
 // TODO: It maybe be more intuitive to add an intermediate conversion step here
 // that converts the axes to directions, then to the new axes, because that's more
 // or less what's happening here. See "Addressing Axes in Rotation Order" above.
-Frame1OrderInFrame1Axes       =>    Frame1OrderInFrame2Axes
+Frame1OrderInFrame1Axes => Directions            => Substituted Axes                => Frame1OrderInFrame2Axes
 // Z to X (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
 // X to Y (same notional axis) - to - (in the same direction)
 // Y to Z (same notional axis) - to + (negation because the axes flip, accomodating the counter-clock rotation)
-(-Z, -X, -Y)                        (+X, -Y, +Z)
+(-Z, -X, -Y)            => (-(-F), -(+R), -(+U)) => (-(-(+X), -(+(+Y))), -(+(-Z)))) => (+X, -Y, +Z)
 
 (-3)                                      .-------(-2)
  |  (-1)                               ／ |
