@@ -10,8 +10,8 @@ public class FrameConversions {
 
     // Description of an axis, such as -X
     public struct Axis {
-        string _axis;
-        public string name { get { return _axis; } }
+        string _name;
+        public string name { get { return _name; } }
 
         bool _negative;
         public bool negative { get { return _negative; } }
@@ -19,7 +19,7 @@ public class FrameConversions {
         public int xyzIndex { get { return name == "X" ? 0 : name == "Y" ? 1 : 2; } }
 
         public Axis(string axis, bool negative = false) {
-            _axis = axis;
+            _name = axis;
             _negative = negative;
         }
 
@@ -69,8 +69,8 @@ public class FrameConversions {
         public Axis this[int i] { get { return _axes[i]; } }
         public int this[string a] { get { return _axisToIndex[a.ToUpper()]; } }
 
-        public Axis left    { get { return _axes[0]; } }
-        public Axis right   { get { return -_axes[0]; } }
+        public Axis right { get { return _axes[0]; } }
+        public Axis left    { get { return -_axes[0]; } }
         public Axis up      { get { return _axes[1]; } }
         public Axis down    { get { return -_axes[1]; } }
         public Axis forward { get { return _axes[2]; } }
@@ -78,8 +78,8 @@ public class FrameConversions {
 
         private AxisSet() { }
 
-        internal AxisSet(Axis left, Axis up, Axis forward) {
-            _axes = new Axis[] { left, up, forward };
+        internal AxisSet(Axis right, Axis up, Axis forward) {
+            _axes = new Axis[] { right, up, forward };
             _axisToIndex = GetIndexMap(_axes);
         }
 
@@ -165,8 +165,8 @@ public class FrameConversions {
 
         private CoordinateFrame() { }
 
-        public CoordinateFrame(string lufAxes, string rotationOrder) {
-            _axes = new AxisSet(lufAxes);
+        public CoordinateFrame(string rufAxes, string rotationOrder) {
+            _axes = new AxisSet(rufAxes);
             _rotationOrder = new AxisSet(rotationOrder);
         }
 
@@ -174,11 +174,11 @@ public class FrameConversions {
             return FrameConversions.ToPosition(_axes, other._axes, v);
         }
 
-        public Quaternion ToQuaternion(Vector3 euler) {
-            return FrameConversions.ToQuaternion(_rotationOrder, euler);
+        public Quaternion ToQuaternion(Vector3 eulerAngles) {
+            return FrameConversions.ToQuaternion(_rotationOrder, eulerAngles);
         }
 
-        public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 euler) {
+        public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 eulerAngles) {
             throw new NotImplementedException();
         }
 
