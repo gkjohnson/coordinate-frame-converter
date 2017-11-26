@@ -29,10 +29,32 @@ public class FrameConversions {
             return str;
         }
 
+        // Operator overloading
         public static Axis operator -(Axis axis) {
             Axis a = axis;
             a._negative = !a._negative;
             return a;
+        }
+
+        public static bool operator ==(Axis a, Axis b) {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Axis a, Axis b) {
+            return !(a == b);
+        }
+
+        public override int GetHashCode() {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
+
+            Axis other = (Axis)obj;
+            return name == other.name && negative == other.negative;
         }
     }
 
@@ -110,13 +132,34 @@ public class FrameConversions {
             for (int i = 0; i < 3; i++) dict[axes[i].name.ToUpper()] = i;
             return dict;
         }
+
+        // Operator overloads
+        public static bool operator ==(AxisSet a, AxisSet b) {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(AxisSet a, AxisSet b) {
+            return !(a == b);
+        }
+
+        public override int GetHashCode() {
+            return right.GetHashCode() ^ up.GetHashCode() ^ forward.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
+            AxisSet other = (AxisSet)obj;
+            return right == other.right && up == other.up && forward == other.forward;
+        }
     }
 
     public class CoordinateFrame {
         AxisSet _axes, _rotationOrder;
 
-        public string Axes { get { return _axes.ToString(true); } }
-        public string RotationOrder { get { return _rotationOrder.ToString(true); } }
+        public AxisSet Axes { get { return _axes; } }
+        public AxisSet RotationOrder { get { return _rotationOrder; } }
 
         private CoordinateFrame() { }
 
@@ -135,6 +178,27 @@ public class FrameConversions {
 
         public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 euler) {
             throw new NotImplementedException();
+        }
+
+        // Operator overloads
+        public static bool operator ==(CoordinateFrame a, CoordinateFrame b) {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(CoordinateFrame a, CoordinateFrame b) {
+            return !(a == b);
+        }
+
+        public override int GetHashCode() {
+            return Axes.GetHashCode() ^ RotationOrder.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
+            CoordinateFrame other = (CoordinateFrame)obj;
+            return Axes == other.Axes && RotationOrder == other.RotationOrder;
         }
     }
 
@@ -163,6 +227,28 @@ public class FrameConversions {
 
         public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
         public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerOrder(_toFrame, euler); }
+
+        // Operator overloads
+        public static bool operator ==(CoordinateFrameConverter a, CoordinateFrameConverter b) {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(CoordinateFrameConverter a, CoordinateFrameConverter b) {
+            return !(a == b);
+        }
+
+        public override int GetHashCode() {
+            return from.GetHashCode() ^ to.GetHashCode();
+        }
+
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
+
+            CoordinateFrameConverter other = (CoordinateFrameConverter)obj;
+            return from == other.from && to == other.to;
+        }
     }
 
     delegate Vector3 QuatEulerExtractionDelegate(Quaternion quat, out AngleExtraction.EulerResult eu);
