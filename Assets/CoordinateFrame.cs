@@ -23,6 +23,7 @@ public class FrameConversions {
             _negative = negative;
         }
 
+        // ToString override
         public string ToString(bool includeSign = false) {
             string str = name;
             if (includeSign) str = (negative ? "-" : "+") + str;
@@ -87,12 +88,6 @@ public class FrameConversions {
             _axisToIndex = GetIndexMap(_axes);
         }
 
-        public string ToString(bool includeSign = false) {
-            string res = "";
-            foreach (Axis a in _axes) res += a.ToString(includeSign);
-            return res;
-        }
-
         Axis[] SanitizeAxisDescription(string s, bool guaranteeUniqueness = true) {
             s = s.ToUpper();
 
@@ -131,6 +126,13 @@ public class FrameConversions {
             var dict = new Dictionary<string, int>();
             for (int i = 0; i < 3; i++) dict[axes[i].name.ToUpper()] = i;
             return dict;
+        }
+
+        // ToString override
+        public string ToString(bool includeSign = false) {
+            string res = "";
+            foreach (Axis a in _axes) res += a.ToString(includeSign);
+            return res;
         }
 
         // Operator overloads
@@ -180,6 +182,11 @@ public class FrameConversions {
             throw new NotImplementedException();
         }
 
+        // ToString override
+        public string ToString(bool includeSign = false) {
+            return Axes.ToString(includeSign) + ", " + RotationOrder.ToString(includeSign);
+        }
+
         // Operator overloads
         public static bool operator ==(CoordinateFrame a, CoordinateFrame b) {
             if (ReferenceEquals(a, b)) return true;
@@ -227,6 +234,11 @@ public class FrameConversions {
 
         public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
         public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerOrder(_toFrame, euler); }
+        
+        // ToString override
+        public string ToString(bool includeSign = false) {
+            return from.ToString(includeSign) + " to " + to.ToString(includeSign);
+        }
 
         // Operator overloads
         public static bool operator ==(CoordinateFrameConverter a, CoordinateFrameConverter b) {
