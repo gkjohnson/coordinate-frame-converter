@@ -7,9 +7,11 @@ public class Tests : MonoBehaviour {
     void Start () {
         var conventions = GetAxisConventions();
         var rotOrders = GetAxisConventions(true);
+        var coordinateFrames = GetCoordinateFrames();
 
         Debug.Log("Ran into " + RunPositionTests(conventions) + " issues when doing position conversions");
         Debug.Log("Ran into " + RunRotationTests(rotOrders) + " issues when doing rotation conversions");
+        Debug.Log("Ran into " + RunCoordinateFrameTests(coordinateFrames) + " issues when doing coordinate frame conversions");
     }
 
     // Returns all possible combinations of axis conventions
@@ -42,6 +44,19 @@ public class Tests : MonoBehaviour {
                 }
 
         return axes;
+    }
+
+    // Returns all possible coordinate frame converters
+    List<FrameConversions.CoordinateFrame> GetCoordinateFrames() {
+        var frames = new List<FrameConversions.CoordinateFrame>();
+        var conventions = GetAxisConventions();
+        var rotOrders = GetAxisConventions(true);
+
+        foreach (var c in conventions)
+            foreach (var ro in rotOrders)
+                frames.Add(new FrameConversions.CoordinateFrame(c.ToString(true), ro.ToString(true)));
+
+        return frames;
     }
     
     // Transforms to and from all conventions to make sure the
@@ -93,6 +108,33 @@ public class Tests : MonoBehaviour {
                 }
             }
         
+        return issues;
+    }
+
+    int RunCoordinateFrameTests(List<FrameConversions.CoordinateFrame> frames) {
+        int issues = 0;
+
+        foreach (var fr1 in frames) {
+            foreach (var fr2 in frames) {
+
+                var cfc = new FrameConversions.CoordinateFrameConverter(fr1, fr2);
+                if (cfc != cfc.inverse.inverse || cfc.from != cfc.inverse.to || cfc.to != cfc.inverse.from) issues++;
+
+                Vector3 v = new Vector3(1, 2, 3);
+                Vector3 to = fr1.ToPosition(fr2, v);
+                Vector3 back = fr2.ToPosition(fr1, to);
+
+                if (!AreVectorsEquivalent(v, back)) issues++;
+
+                to = cfc.ConvertPosition(v);
+                back = cfc.inverse.ConvertPosition(to);
+
+                if (!AreVectorsEquivalent(v, back)) issues++;
+
+                // TODO: rotation conversions
+            }
+        }
+
         return issues;
     }
 
