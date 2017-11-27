@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using FrameConversions;
 
 public class Tests : MonoBehaviour {
 
@@ -67,8 +68,8 @@ public class Tests : MonoBehaviour {
             foreach(var c2 in conventions) {
                 Vector3 v = new Vector3(1, 2, 3);
 
-                Vector3 to = FrameConversions.ToPosition(c1, c2, v);
-                Vector3 back = FrameConversions.ToPosition(c2, c1, to);
+                Vector3 to = Conversions.ToPosition(c1, c2, v);
+                Vector3 back = Conversions.ToPosition(c2, c1, to);
 
                 if (!AreVectorsEquivalent(v, back)) {
                     Debug.Log(c1.ToString(true) + " could not convert to " + c2.ToString(true));
@@ -87,11 +88,11 @@ public class Tests : MonoBehaviour {
         foreach(var o1 in orders)
             foreach(var o2 in orders) {
                 Vector3 e = new Vector3(20, 40, 80);
-                Vector3 to = FrameConversions.ToEulerOrder(o1, o2, e);
-                Vector3 back = FrameConversions.ToEulerOrder(o2, o1, to);
+                Vector3 to = Conversions.ToEulerOrder(o1, o2, e);
+                Vector3 back = Conversions.ToEulerOrder(o2, o1, to);
                 
-                Quaternion qe = FrameConversions.ToQuaternion(o1, e);
-                Quaternion qback = FrameConversions.ToQuaternion(o1, back);
+                Quaternion qe = Conversions.ToQuaternion(o1, e);
+                Quaternion qback = Conversions.ToQuaternion(o1, back);
 
                 // Check if the rotations are the same or if the rotations
                 // have the equivalent effect on transforming vectors
