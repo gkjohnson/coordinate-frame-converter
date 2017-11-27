@@ -82,12 +82,17 @@ namespace FrameConversions {
 
             // Step 1
             // State the axes to rotate about
-            var axis1 = frame2.RotationOrder[0];
-            var axis2 = frame2.RotationOrder[1];
-            var axis3 = frame2.RotationOrder[2];
+            var axis0 = frame2.RotationOrder[0];
+            var axis1 = frame2.RotationOrder[1];
+            var axis2 = frame2.RotationOrder[2];
 
             // Step 2
             // Change the rotation direction based on the axis direction
+            axis0 = new Axis(
+                axis0.name,
+                axis0.negative != frame2.Axes[frame2.Axes[axis0.name]].negative
+                );
+
             axis1 = new Axis(
                 axis1.name,
                 axis1.negative != frame2.Axes[frame2.Axes[axis1.name]].negative
@@ -97,14 +102,14 @@ namespace FrameConversions {
                 axis2.name,
                 axis2.negative != frame2.Axes[frame2.Axes[axis2.name]].negative
                 );
-
-            axis3 = new Axis(
-                axis3.name,
-                axis3.negative != frame2.Axes[frame2.Axes[axis3.name]].negative
-                );
-
+            
             // Step 3
             // Substitute in the target axes
+            axis0 = new Axis(
+                frame1.Axes[frame2.Axes[axis0.name]].name,
+                axis0.negative != frame1.Axes[frame2.Axes[axis0.name]].negative
+                );
+
             axis1 = new Axis(
                 frame1.Axes[frame2.Axes[axis1.name]].name,
                 axis1.negative != frame1.Axes[frame2.Axes[axis1.name]].negative
@@ -115,14 +120,9 @@ namespace FrameConversions {
                 axis2.negative != frame1.Axes[frame2.Axes[axis2.name]].negative
                 );
 
-            axis3 = new Axis(
-                frame1.Axes[frame2.Axes[axis3.name]].name,
-                axis3.negative != frame1.Axes[frame2.Axes[axis3.name]].negative
-                );
-
             // Step 4
             // Create the new extraction order
-            var newOrder = new AxisSet(axis1, axis2, axis3);
+            var newOrder = new AxisSet(axis0, axis1, axis2);
 
             UnityEngine.Debug.Log(newOrder.ToString(true));
             throw new NotImplementedException();
