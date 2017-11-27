@@ -26,6 +26,8 @@ TODO...
 TODO...
 
 ## TODO
-- [ ] Add accessors for "L", "U", and "F" to retrieve the named axes in those directions. This might make rotation conversions easier.
+- [ ] Add a custom struct for a vector
 - [ ] Add full coordinate frame conversions for euler angle rotations.
 - [ ] Add tests for full coordinate frame rotations
+- [ ] Get some real world test cases
+- [ ] Document how Vector3 and EulerAngle structs work relative to the coordinate frames
