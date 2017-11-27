@@ -79,9 +79,11 @@ rotation: `+X, +Z, +Y`
 // frame's conventions
 Frame1        =>  Frame2
 (+X, +Y, +Z)      (-Z, +X, -Y)
+( 1,  2,  3)  =>  (-3,  1, -2)
 
 Frame2        =>  Frame1
 (+X, +Y, +Z)      (+Y, -Z, -X)
+(-3,  1, -2)      ( 1,  2,  3)
 ```
 
 ### Rotation Transforms
