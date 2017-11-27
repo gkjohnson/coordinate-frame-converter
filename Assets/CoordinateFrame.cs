@@ -61,20 +61,12 @@ public class FrameConversions {
 
     // Description of a full axis set, such ax -X +Y +Z
     public class AxisSet {
-
-        // Three axes ordered to describe left, up, and forward
+        // Three axes ordered to describe right, up, and forward
         Axis[] _axes;
         Dictionary<string, int> _axisToIndex;
 
         public Axis this[int i] { get { return _axes[i]; } }
         public int this[string a] { get { return _axisToIndex[a.ToUpper()]; } }
-
-        public Axis right { get { return _axes[0]; } }
-        public Axis left    { get { return -_axes[0]; } }
-        public Axis up      { get { return _axes[1]; } }
-        public Axis down    { get { return -_axes[1]; } }
-        public Axis forward { get { return _axes[2]; } }
-        public Axis back    { get { return -_axes[2]; } }
 
         private AxisSet() { }
 
@@ -147,13 +139,13 @@ public class FrameConversions {
         }
 
         public override int GetHashCode() {
-            return right.GetHashCode() ^ up.GetHashCode() ^ forward.GetHashCode();
+            return _axes[0].GetHashCode() ^ _axes[1].GetHashCode() ^ _axes[2].GetHashCode();
         }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
             AxisSet other = (AxisSet)obj;
-            return right == other.right && up == other.up && forward == other.forward;
+            return _axes[0] == other._axes[0] && _axes[1] == other._axes[1] && _axes[2] == other._axes[2];
         }
     }
 
@@ -233,7 +225,7 @@ public class FrameConversions {
             :this(new CoordinateFrame(fromAxis, fromRotation), new CoordinateFrame(toAxis, toRotation)) { }
 
         public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
-        public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerOrder(_toFrame, euler); }
+        public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerAngles(_toFrame, euler); }
         
         // ToString override
         public string ToString(bool includeSign = false) {
@@ -300,13 +292,20 @@ public class FrameConversions {
     }
 
     public static Vector3 ToPosition(AxisSet from, AxisSet to, Vector3 v) {
+        
         Vector3 res = new Vector3();
+        
         for(int i = 0; i < 3; i ++) {
-            Axis fromAxis = from[i];
-            int toIndex = to[fromAxis.name];
-            Axis toAxis = to[toIndex];
+            float value = v[i];
+            string str = i == 0 ? "X" : i == 1 ? "Y" : "Z";
 
-            res[toIndex] = fromAxis.negative == toAxis.negative ? v[i] : -v[i];
+            int fromIndex = from[str];
+            Axis fromAxis = from[fromIndex];
+            
+            Axis toAxis = to[fromIndex];
+            int toIndex = toAxis.name == "X" ? 0 : toAxis.name == "Y" ? 1 : 2;
+
+            res[toIndex] = fromAxis.negative == toAxis.negative ? value : -value;
         }
         return res;
     }
