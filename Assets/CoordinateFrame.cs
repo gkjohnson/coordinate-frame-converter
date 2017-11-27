@@ -170,8 +170,65 @@ public class FrameConversions {
             return FrameConversions.ToQuaternion(_rotationOrder, eulerAngles);
         }
 
-        public Vector3 ToEulerOrder(CoordinateFrame other, Vector3 eulerAngles) {
+        public Vector3 ToEulerAngles(CoordinateFrame other, Vector3 eulerAngles) {
+
+            var frame1 = other;
+            var frame2 = this;
+
+            // Step 1
+            var axis1 = frame1.RotationOrder[0];
+            var axis2 = frame1.RotationOrder[1];
+            var axis3 = frame1.RotationOrder[2];
+
+            // Step 2
+            axis1 = new Axis(
+                axis1.name,
+                axis1.negative != frame1.Axes[frame1.Axes[axis1.name]].negative
+                );
+
+            axis2 = new Axis(
+                axis2.name,
+                axis2.negative != frame1.Axes[frame1.Axes[axis2.name]].negative
+                );
+
+            axis3 = new Axis(
+                axis3.name,
+                axis3.negative != frame1.Axes[frame1.Axes[axis3.name]].negative
+                );
+
+            // Step 3
+            axis1 = new Axis(
+                frame2.Axes[frame1.Axes[axis1.name]].name,
+                axis1.negative != frame2.Axes[frame1.Axes[axis1.name]].negative
+                );
+
+            axis2 = new Axis(
+                frame2.Axes[frame1.Axes[axis2.name]].name,
+                axis2.negative != frame2.Axes[frame1.Axes[axis2.name]].negative
+                );
+
+            axis3 = new Axis(
+                frame2.Axes[frame1.Axes[axis3.name]].name,
+                axis3.negative != frame2.Axes[frame1.Axes[axis3.name]].negative
+                );
+
+            // Step 4
+            var newOrder = new AxisSet(axis1, axis2, axis3);
+
+            UnityEngine.Debug.Log(newOrder.ToString(true));
             throw new NotImplementedException();
+
+            // quat in current coordinate frame
+            Quaternion thisquat = frame2.ToQuaternion(eulerAngles);
+
+            // extract in the converted order
+            Vector3 extracteuler = ExtractEulerAngles(newOrder, thisquat);
+
+            return FrameConversions.ToPosition(
+                new AxisSet(frame2.Axes.ToString(false)),
+                new AxisSet(frame1.Axes.ToString(false)),
+                extracteuler
+            );
         }
 
         // ToString override
