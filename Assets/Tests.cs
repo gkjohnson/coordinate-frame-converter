@@ -17,15 +17,15 @@ public class Tests : MonoBehaviour {
         ));
 
         Debug.Assert(
-            Conversions.ToQuaternion(new AxisSet("-Z-X-Y"), new Vector3(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
+            Conversions.ToQuaternion(new AxisSet("-Z-X-Y"), new EulerAngles(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
         );
         var conventions = GetAxisConventions();
         var rotOrders = GetAxisConventions(true);
-        var coordinateFrames = GetCoordinateFrames();
+        //var coordinateFrames = GetCoordinateFrames();
 
         Debug.Log("Ran into " + RunPositionTests(conventions) + " issues when doing position conversions");
         Debug.Log("Ran into " + RunRotationTests(rotOrders) + " issues when doing rotation conversions");
-        Debug.Log("Ran into " + RunCoordinateFrameTests(coordinateFrames) + " issues when doing coordinate frame conversions");
+        //Debug.Log("Ran into " + RunCoordinateFrameTests(coordinateFrames) + " issues when doing coordinate frame conversions");
     }
 
     // Returns all possible combinations of axis conventions
@@ -100,9 +100,9 @@ public class Tests : MonoBehaviour {
 
         foreach(var o1 in orders)
             foreach(var o2 in orders) {
-                Vector3 e = new Vector3(20, 40, 80);
-                Vector3 to = Conversions.ConvertEulerOrder(o1, o2, e);
-                Vector3 back = Conversions.ConvertEulerOrder(o2, o1, to);
+                EulerAngles e = new EulerAngles(20, 40, 80);
+                EulerAngles to = Conversions.ConvertEulerOrder(o1, o2, e);
+                EulerAngles back = Conversions.ConvertEulerOrder(o2, o1, to);
                 
                 Quaternion qe = Conversions.ToQuaternion(o1, e);
                 Quaternion qback = Conversions.ToQuaternion(o1, back);
@@ -154,8 +154,13 @@ public class Tests : MonoBehaviour {
 
     // Checks whether or not the vectors are equivalent, affording some epsilon
     // for vectors representing euler rotations in particular.
-    bool AreVectorsEquivalent(Vector3 a, Vector3 b, float eps = 1e-40f) {
-        Vector3 delta = a - b;
+    bool AreVectorsEquivalent(EulerAngles a, EulerAngles b, float eps = 1e-40f) {
+        return AreVectorsEquivalent(new Vector3(a[0], a[1], a[2]), new Vector3(b[0], b[1], b[2]));
+    }
+
+    bool AreVectorsEquivalent(Vector3 a, Vector3 b, float eps = 1e-40f)
+        {
+            Vector3 delta = a - b;
         delta.x = Mathf.Abs(delta.x);
         delta.y = Mathf.Abs(delta.y);
         delta.z = Mathf.Abs(delta.z);

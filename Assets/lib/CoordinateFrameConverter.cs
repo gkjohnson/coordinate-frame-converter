@@ -28,7 +28,7 @@ namespace FrameConversions {
 
         #region API
         public Vector3 ConvertPosition(Vector3 p) { return _fromFrame.ToPosition(_toFrame, p); }
-        public Vector3 ConvertEulerAngles(Vector3 euler) { return _fromFrame.ToEulerAngles(_toFrame, euler); }
+        public EulerAngles ConvertEulerAngles(EulerAngles euler) { return _fromFrame.ToEulerAngles(_toFrame, euler); }
         #endregion
 
         #region To String

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FrameConversions {
     static class Conversions {
-        delegate Vector3 QuatEulerExtractionDelegate(Quaternion quat, out AngleExtraction.EulerResult eu);
+        delegate EulerAngles QuatEulerExtractionDelegate(Quaternion quat, out AngleExtraction.EulerResult eu);
         delegate Vector3 RawEulerExtractionDelegate(Matrix4x4 mat, out AngleExtraction.EulerResult eu);
         static Dictionary<string, QuatEulerExtractionDelegate> _extractionFunctions;
         static Dictionary<string, QuatEulerExtractionDelegate> extractionFunctions {
@@ -16,7 +16,7 @@ namespace FrameConversions {
                     // - Convert to degrees
                     Func<RawEulerExtractionDelegate, QuatEulerExtractionDelegate> _wrapFunc = f => {
                         QuatEulerExtractionDelegate res = delegate (Quaternion q, out AngleExtraction.EulerResult eu) {
-                            return Mathf.Rad2Deg * f(Matrix4x4.TRS(Vector3.zero, q, Vector3.one), out eu);
+                            return new EulerAngles(Mathf.Rad2Deg * f(Matrix4x4.TRS(Vector3.zero, q, Vector3.one), out eu));
                         };
                         return res;
                     };
@@ -67,18 +67,18 @@ namespace FrameConversions {
         }
 
         // Convert between the provided euler orders
-        public static Vector3 ConvertEulerOrder(string from, string to, Vector3 eulerAngles) {
+        public static EulerAngles ConvertEulerOrder(string from, string to, EulerAngles eulerAngles) {
             return ConvertEulerOrder(new AxisSet(from, false), new AxisSet(to, false), eulerAngles);
         }
-        public static Vector3 ConvertEulerOrder(AxisSet from, AxisSet to, Vector3 eulerAngles) {
+        public static EulerAngles ConvertEulerOrder(AxisSet from, AxisSet to, EulerAngles eulerAngles) {
             Quaternion quat = ToQuaternion(from, eulerAngles);
             return ExtractEulerAngles(to, quat);
         }
 
-        public static Vector3 ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, Vector3 eulerAngles) {
+        public static EulerAngles ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, EulerAngles eulerAngles) {
             return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
         }
-        public static Vector3 ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, Vector3 eulerAngles) {
+        public static EulerAngles ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, EulerAngles eulerAngles) {
 
             // Step 1
             // State the axes to rotate about
@@ -131,20 +131,23 @@ namespace FrameConversions {
             Quaternion thisquat = ToQuaternion(frame1.RotationOrder, eulerAngles);
 
             // extract in the converted order
-            Vector3 extracteuler = ExtractEulerAngles(newOrder, thisquat);
+            EulerAngles extracteuler = ExtractEulerAngles(newOrder, thisquat);
 
-            return ConvertPosition(
+
+            Vector3 v = new Vector3(extracteuler[0], extracteuler[1], extracteuler[2]);
+            v = ConvertPosition(
                 new AxisSet(frame1.Axes.ToString(false)),
                 new AxisSet(frame2.Axes.ToString(false)),
-                extracteuler
+                v
             );
+            return new EulerAngles(v);
         }
 
         #region Helpers
         // Takes euler angles in degrees
         // Returns the rotation as a quaternion that results from
         // applying the rotations in the provided order
-        public static Quaternion ToQuaternion(AxisSet order, Vector3 euler) {
+        public static Quaternion ToQuaternion(AxisSet order, EulerAngles euler) {
             Quaternion res = Quaternion.identity;
 
             for (int i = 0; i < 3; i++) {
@@ -163,9 +166,9 @@ namespace FrameConversions {
         // Outputs euler angles in degrees
         // Extracts the rotation in Euler degrees in the 
         // given order
-        public static Vector3 ExtractEulerAngles(AxisSet order, Quaternion quat) {
+        public static EulerAngles ExtractEulerAngles(AxisSet order, Quaternion quat) {
             AngleExtraction.EulerResult eu;
-            Vector3 res = extractionFunctions[order.ToString()](quat, out eu);
+            EulerAngles res = extractionFunctions[order.ToString()](quat, out eu);
             for (int i = 0; i < 3; i++) {
                 if (order[i].negative) res[i] *= -1;
             }
