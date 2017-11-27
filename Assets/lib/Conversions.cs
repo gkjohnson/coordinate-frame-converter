@@ -40,35 +40,119 @@ namespace FrameConversions {
             }
         }
 
-        public static Vector3 ToPosition(AxisSet from, AxisSet to, Vector3 v) {
-
+        public static Vector3 ConvertPosition(string from, string to, Vector3 v) {
+            return ConvertPosition(new AxisSet(from), new AxisSet(to), v);
+        }
+        public static Vector3 ConvertPosition(AxisSet from, AxisSet to, Vector3 v) {
             Vector3 res = new Vector3();
 
+            // Iterate over right, then up, then forward
             for (int i = 0; i < 3; i++) {
-                float value = v[i];
-                string str = i == 0 ? "X" : i == 1 ? "Y" : "Z";
+                // Get the axis name associated with the 
+                // given direction
+                int directionIndex = i; // the direction
 
-                int fromIndex = from[str];
-                Axis fromAxis = from[fromIndex];
+                // Associated axes
+                Axis fromAxis = from[directionIndex];
+                Axis toAxis = to[directionIndex];
 
-                Axis toAxis = to[fromIndex];
-                int toIndex = toAxis.name == "X" ? 0 : toAxis.name == "Y" ? 1 : 2;
-
-                res[toIndex] = fromAxis.negative == toAxis.negative ? value : -value;
+                // The vector index to take the value out of
+                // and put it in to
+                int fromIndex = fromAxis.xyzIndex;
+                int toIndex = toAxis.xyzIndex;
+                
+                res[toIndex] = fromAxis.negative == toAxis.negative ? v[fromIndex] : -v[fromIndex];
             }
             return res;
         }
 
+        // Convert between the provided euler orders
+        public static Vector3 ConvertEulerOrder(string from, string to, Vector3 eulerAngles) {
+            return ConvertEulerOrder(new AxisSet(from, false), new AxisSet(to, false), eulerAngles);
+        }
+        public static Vector3 ConvertEulerOrder(AxisSet from, AxisSet to, Vector3 eulerAngles) {
+            Quaternion quat = ToQuaternion(from, eulerAngles);
+            return ExtractEulerAngles(to, quat);
+        }
+
+        public static Vector3 ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, Vector3 eulerAngles) {
+            return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
+        }
+        public static Vector3 ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, Vector3 eulerAngles) {
+
+            // Step 1
+            // State the axes to rotate about
+            var axis1 = frame2.RotationOrder[0];
+            var axis2 = frame2.RotationOrder[1];
+            var axis3 = frame2.RotationOrder[2];
+
+            // Step 2
+            // Change the rotation direction based on the axis direction
+            axis1 = new Axis(
+                axis1.name,
+                axis1.negative != frame2.Axes[frame2.Axes[axis1.name]].negative
+                );
+
+            axis2 = new Axis(
+                axis2.name,
+                axis2.negative != frame2.Axes[frame2.Axes[axis2.name]].negative
+                );
+
+            axis3 = new Axis(
+                axis3.name,
+                axis3.negative != frame2.Axes[frame2.Axes[axis3.name]].negative
+                );
+
+            // Step 3
+            // Substitute in the target axes
+            axis1 = new Axis(
+                frame1.Axes[frame2.Axes[axis1.name]].name,
+                axis1.negative != frame1.Axes[frame2.Axes[axis1.name]].negative
+                );
+
+            axis2 = new Axis(
+                frame1.Axes[frame2.Axes[axis2.name]].name,
+                axis2.negative != frame1.Axes[frame2.Axes[axis2.name]].negative
+                );
+
+            axis3 = new Axis(
+                frame1.Axes[frame2.Axes[axis3.name]].name,
+                axis3.negative != frame1.Axes[frame2.Axes[axis3.name]].negative
+                );
+
+            // Step 4
+            // Create the new extraction order
+            var newOrder = new AxisSet(axis1, axis2, axis3);
+
+            UnityEngine.Debug.Log(newOrder.ToString(true));
+            throw new NotImplementedException();
+
+            // quat in current coordinate frame
+            Quaternion thisquat = ToQuaternion(frame1.RotationOrder, eulerAngles);
+
+            // extract in the converted order
+            Vector3 extracteuler = ExtractEulerAngles(newOrder, thisquat);
+
+            return ConvertPosition(
+                new AxisSet(frame1.Axes.ToString(false)),
+                new AxisSet(frame2.Axes.ToString(false)),
+                extracteuler
+            );
+        }
+
+        #region Helpers
         // Takes euler angles in degrees
+        // Returns the rotation as a quaternion that results from
+        // applying the rotations in the provided order
         public static Quaternion ToQuaternion(AxisSet order, Vector3 euler) {
             Quaternion res = Quaternion.identity;
 
             for (int i = 0; i < 3; i++) {
-                Vector3 angles = Vector3.zero;
                 Axis axis = order[i];
+                Vector3 angles = Vector3.zero;
                 angles[axis.xyzIndex] = axis.negative ? -euler[i] : euler[i];
-
-                // Unity's default rotation order is negative
+                
+                // Unity's default rotation direction is negative
                 angles *= -1;
 
                 res = Quaternion.Euler(angles) * res;
@@ -76,7 +160,9 @@ namespace FrameConversions {
             return res;
         }
 
-        // outputs euler angles in degrees
+        // Outputs euler angles in degrees
+        // Extracts the rotation in Euler degrees in the 
+        // given order
         public static Vector3 ExtractEulerAngles(AxisSet order, Quaternion quat) {
             AngleExtraction.EulerResult eu;
             Vector3 res = extractionFunctions[order.ToString()](quat, out eu);
@@ -85,10 +171,6 @@ namespace FrameConversions {
             }
             return res;
         }
-
-        public static Vector3 ToEulerOrder(AxisSet from, AxisSet to, Vector3 euler) {
-            Quaternion quat = ToQuaternion(from, euler);
-            return ExtractEulerAngles(to, quat);
-        }
+        #endregion
     }
 }

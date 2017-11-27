@@ -6,6 +6,19 @@ public class Tests : MonoBehaviour {
 
     // Run the tests
     void Start () {
+        Debug.Assert(AreVectorsEquivalent(
+            Conversions.ConvertPosition("+X+Y-Z", "+Y-Z+X", new Vector3(1,2,3)),
+            new Vector3(-3, 1, -2)
+        ));
+
+        Debug.Assert(AreVectorsEquivalent(
+            Conversions.ConvertPosition("-Z-X+Y", "+X-Z+Y", new Vector3(1, 2, 3)),
+            new Vector3(-3, 2, 1)
+        ));
+
+        Debug.Assert(
+            Conversions.ToQuaternion(new AxisSet("-Z-X-Y"), new Vector3(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
+        );
         var conventions = GetAxisConventions();
         var rotOrders = GetAxisConventions(true);
         var coordinateFrames = GetCoordinateFrames();
@@ -68,8 +81,8 @@ public class Tests : MonoBehaviour {
             foreach(var c2 in conventions) {
                 Vector3 v = new Vector3(1, 2, 3);
 
-                Vector3 to = Conversions.ToPosition(c1, c2, v);
-                Vector3 back = Conversions.ToPosition(c2, c1, to);
+                Vector3 to = Conversions.ConvertPosition(c1, c2, v);
+                Vector3 back = Conversions.ConvertPosition(c2, c1, to);
 
                 if (!AreVectorsEquivalent(v, back)) {
                     Debug.Log(c1.ToString(true) + " could not convert to " + c2.ToString(true));
@@ -88,8 +101,8 @@ public class Tests : MonoBehaviour {
         foreach(var o1 in orders)
             foreach(var o2 in orders) {
                 Vector3 e = new Vector3(20, 40, 80);
-                Vector3 to = Conversions.ToEulerOrder(o1, o2, e);
-                Vector3 back = Conversions.ToEulerOrder(o2, o1, to);
+                Vector3 to = Conversions.ConvertEulerOrder(o1, o2, e);
+                Vector3 back = Conversions.ConvertEulerOrder(o2, o1, to);
                 
                 Quaternion qe = Conversions.ToQuaternion(o1, e);
                 Quaternion qback = Conversions.ToQuaternion(o1, back);
@@ -103,7 +116,7 @@ public class Tests : MonoBehaviour {
                     AreVectorsEquivalent(qe * Vector3.right,    qback * Vector3.right,      1e-6f);
 
                 if (!equal) {
-                    Debug.Log((qe * Vector3.forward).ToString("0.000000") + " : " + (qback * Vector3.forward).ToString("0.000000"));
+                    Debug.Log(o1.ToString(true) + " > " + o2.ToString(true));
                     Debug.Log(e.ToString("0.0000") + " > " + to.ToString("0.0000") + " > " + back.ToString("0.0000"));
                     issues++;
                 }
