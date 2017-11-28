@@ -21,11 +21,13 @@ public class Tests : MonoBehaviour {
         );
         var conventions = GetAxisConventions();
         var rotOrders = GetAxisConventions(true);
-        //var coordinateFrames = GetCoordinateFrames();
+        var coordinateFrames = GetCoordinateFrames();
 
         Debug.Log("Ran into " + RunPositionTests(conventions) + " issues when doing position conversions");
         Debug.Log("Ran into " + RunRotationTests(rotOrders) + " issues when doing rotation conversions");
-        //Debug.Log("Ran into " + RunCoordinateFrameTests(coordinateFrames) + " issues when doing coordinate frame conversions");
+
+        // TODO: these still aren't consistent
+        Debug.Log("Ran into " + RunCoordinateFrameTests(coordinateFrames) + " issues when doing coordinate frame conversions");
     }
 
     // Returns all possible combinations of axis conventions
@@ -131,7 +133,7 @@ public class Tests : MonoBehaviour {
         foreach (var fr1 in frames) {
             foreach (var fr2 in frames) {
 
-                var cfc = new FrameConversions.CoordinateFrameConverter(fr1, fr2);
+                var cfc = new CoordinateFrameConverter(fr1, fr2);
                 if (cfc != cfc.inverse.inverse || cfc.from != cfc.inverse.to || cfc.to != cfc.inverse.from) issues++;
 
                 Vector3 v = new Vector3(1, 2, 3);
@@ -145,7 +147,26 @@ public class Tests : MonoBehaviour {
 
                 if (!AreVectorsEquivalent(v, back)) issues++;
 
-                // TODO: rotation conversions
+                // Rotation Conversions
+                EulerAngles e = new EulerAngles(10, 20, 30);
+                EulerAngles eTo = Conversions.ConvertEulerAngles(fr1, fr2, e);
+                EulerAngles eBack = Conversions.ConvertEulerAngles(fr2, fr1, eTo);
+
+                Quaternion qe = fr1.ToQuaternion(e);
+                Quaternion qback = fr1.ToQuaternion(eBack);
+
+                bool equal =
+                    AreVectorsEquivalent(e, eBack, 1e-4f) ||
+                    AreVectorsEquivalent(qe * Vector3.forward, qback * Vector3.forward, 1e-6f) &&
+                    AreVectorsEquivalent(qe * Vector3.up, qback * Vector3.up, 1e-6f) &&
+                    AreVectorsEquivalent(qe * Vector3.right, qback * Vector3.right, 1e-6f);
+
+                if (!equal) {
+                    Debug.Log(fr1.ToString(true) + " > " + fr2.ToString(true));
+                    Debug.Log(e.ToString("0.0000") + " > " + eTo.ToString("0.0000") + " > " + eBack.ToString("0.0000"));
+                    issues++;
+                }
+                
             }
         }
 
