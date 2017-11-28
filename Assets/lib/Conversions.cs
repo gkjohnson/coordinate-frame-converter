@@ -79,68 +79,57 @@ namespace FrameConversions {
             return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
         }
         public static EulerAngles ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, EulerAngles eulerAngles) {
-
             // Step 1
             // State the axes to rotate about
-            var axis0 = frame2.RotationOrder[0];
-            var axis1 = frame2.RotationOrder[1];
-            var axis2 = frame2.RotationOrder[2];
+            var axis0 = frame1.RotationOrder[0];
+            var axis1 = frame1.RotationOrder[1];
+            var axis2 = frame1.RotationOrder[2];
 
             // Step 2
             // Change the rotation direction based on the axis direction
             axis0 = new Axis(
                 axis0.name,
-                axis0.negative != frame2.Axes[frame2.Axes[axis0.name]].negative
+                axis0.negative != frame1.Axes[frame1.Axes[axis0.name]].negative
                 );
 
             axis1 = new Axis(
                 axis1.name,
-                axis1.negative != frame2.Axes[frame2.Axes[axis1.name]].negative
+                axis1.negative != frame1.Axes[frame1.Axes[axis1.name]].negative
                 );
 
             axis2 = new Axis(
                 axis2.name,
-                axis2.negative != frame2.Axes[frame2.Axes[axis2.name]].negative
+                axis2.negative != frame1.Axes[frame1.Axes[axis2.name]].negative
                 );
             
             // Step 3
             // Substitute in the target axes
             axis0 = new Axis(
-                frame1.Axes[frame2.Axes[axis0.name]].name,
-                axis0.negative != frame1.Axes[frame2.Axes[axis0.name]].negative
+                frame2.Axes[frame1.Axes[axis0.name]].name,
+                axis0.negative != frame2.Axes[frame1.Axes[axis0.name]].negative
                 );
 
             axis1 = new Axis(
-                frame1.Axes[frame2.Axes[axis1.name]].name,
-                axis1.negative != frame1.Axes[frame2.Axes[axis1.name]].negative
+                frame2.Axes[frame1.Axes[axis1.name]].name,
+                axis1.negative != frame2.Axes[frame1.Axes[axis1.name]].negative
                 );
 
             axis2 = new Axis(
-                frame1.Axes[frame2.Axes[axis2.name]].name,
-                axis2.negative != frame1.Axes[frame2.Axes[axis2.name]].negative
+                frame2.Axes[frame1.Axes[axis2.name]].name,
+                axis2.negative != frame2.Axes[frame1.Axes[axis2.name]].negative
                 );
 
             // Step 4
             // Create the new extraction order
             var newOrder = new AxisSet(axis0, axis1, axis2);
 
-            UnityEngine.Debug.Log(newOrder.ToString(true));
-            throw new NotImplementedException();
-
             // quat in current coordinate frame
-            Quaternion thisquat = ToQuaternion(frame1.RotationOrder, eulerAngles);
+            Quaternion quat = ToQuaternion(newOrder, eulerAngles);
 
             // extract in the converted order
-            EulerAngles extracteuler = ExtractEulerAngles(newOrder, thisquat);
+            EulerAngles extracteuler = ExtractEulerAngles(frame2.RotationOrder, quat);
 
-
-            Vector3 v = new Vector3(extracteuler[0], extracteuler[1], extracteuler[2]);
-            v = ConvertPosition(
-                new AxisSet(frame1.Axes.ToString(false)),
-                new AxisSet(frame2.Axes.ToString(false)),
-                v
-            );
-            return new EulerAngles(v);
+            return extracteuler;
         }
 
         #region Helpers
