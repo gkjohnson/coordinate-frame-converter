@@ -153,6 +153,8 @@ public class Tests : MonoBehaviour {
         Debug.Log("Ran into " + issues + " issues when doing rotation conversions");
     }
 
+    // Run back and forth conversion tests against a sampling of
+    // coordinate frames
     IEnumerator RunCoordinateFrameTests(List<CoordinateFrame> candidateFrames, int framesToTest) {
         framesToTest = Mathf.Min(candidateFrames.Count, framesToTest);
 
@@ -171,6 +173,7 @@ public class Tests : MonoBehaviour {
         int run = 0;
         foreach (var fr1 in frames) {
             foreach (var fr2 in frames) {
+                // Verify that the inverse frames work as expected
                 var cfc = new CoordinateFrameConverter(fr1, fr2);
                 if (cfc != cfc.inverse.inverse || cfc.from != cfc.inverse.to || cfc.to != cfc.inverse.from) issues++;
 
