@@ -58,3 +58,4 @@ TODO ...
 - [ ] Reconsider of classes
 - [ ] Add thrown errors for failing invalid axis orders
 - [ ] Add flag to indicate whether or not an AxisSet has redundant rotation axes
+- [ ] Look at options for reducing memory allocation and making AxisSets into structs
