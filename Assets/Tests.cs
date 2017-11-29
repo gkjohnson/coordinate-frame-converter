@@ -177,6 +177,7 @@ public class Tests : MonoBehaviour {
                 var cfc = new CoordinateFrameConverter(fr1, fr2);
                 if (cfc != cfc.inverse.inverse || cfc.from != cfc.inverse.to || cfc.to != cfc.inverse.from) issues++;
 
+                // Position Tests
                 Vector3 v = new Vector3(1, 2, 3);
                 Vector3 to = fr1.ToPosition(fr2, v);
                 Vector3 back = fr2.ToPosition(fr1, to);
