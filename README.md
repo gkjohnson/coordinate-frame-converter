@@ -41,3 +41,5 @@ TODO ...
 - [ ] Get some real world test cases
 - [ ] Document how Vector3 and EulerAngle structs work relative to the coordinate frames
 - [ ] Add an example for converting between frames
+- [ ] Pictures
+- [ ] Gizmo Helper
