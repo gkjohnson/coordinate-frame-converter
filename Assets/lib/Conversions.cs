@@ -90,10 +90,10 @@ namespace FrameConversions {
 
             // TODO: Should ToQuaternion be changed to account for this? At the 
             // moment it assumes the Unity direction convention.
-            CoordinateFrame intermediateFrame = new CoordinateFrame("XYZ", "XYZ");
-
-            AxisSet order1InInter = ToEquivelentRotationOrder(frame1.Axes, intermediateFrame.Axes, frame1.RotationOrder);
-            AxisSet order2InInter = ToEquivelentRotationOrder(frame2.Axes, intermediateFrame.Axes, frame2.RotationOrder);
+            AxisSet intermediateAxes = new AxisSet("XYZ");
+            
+            AxisSet order1InInter = ToEquivelentRotationOrder(frame1.Axes, intermediateAxes, frame1.RotationOrder);
+            AxisSet order2InInter = ToEquivelentRotationOrder(frame2.Axes, intermediateAxes, frame2.RotationOrder);
 
             Quaternion intermediateQuat = ToQuaternion(order1InInter, eulerAngles);
             EulerAngles resultantAngles = ExtractEulerAngles(order2InInter, intermediateQuat);

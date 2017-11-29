@@ -23,7 +23,7 @@ namespace FrameConversions {
         }
 
         public EulerAngles ToEulerAngles(CoordinateFrame other, EulerAngles eulerAngles) {
-            return Conversions.ConvertEulerAngles(other, this, eulerAngles);
+            return Conversions.ConvertEulerAngles(this, other, eulerAngles);
         }
         #endregion
 
