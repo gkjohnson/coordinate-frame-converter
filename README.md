@@ -5,7 +5,14 @@ A Unity utility for simply converting between different coordinate frames.
 ## Considerations
 ### Axis Direction
 
-Which way is notionally considered "up", "right", and "forward".
+Which way is notionally considered "up", "right", and "forward":
+
+```
+ U    
+ |   F
+ | ／  
+ .-----R
+```
 
 ### Rotation Order
 
@@ -13,7 +20,7 @@ Which order Euler angles are applied.
 
 ### Rotation Direction
 
-Whether positive rotation is clockwise or counterclockwise about the "right hand rule".
+Whether positive rotation is clockwise or counterclockwise about the "right hand rule". Counterclockwise rotations are considered to be negative.
 
 ## Classes
 ### Unity.Vector3
