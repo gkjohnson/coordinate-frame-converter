@@ -16,9 +16,6 @@ Axis conventions should be considered to be ordered in `right`, `up`, `forward`.
  F       
 ```
 
-### Left Handedness
-Left handed frames are therefore created by negating the appropriate axis.
-
 Unity's coordinate frame would then be considered to be `X`, `Y`, `-Z` in that order (for `right`, `up`, and `forward`)
 
 ### Rotation Order
