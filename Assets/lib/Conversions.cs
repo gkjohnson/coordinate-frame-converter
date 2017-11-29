@@ -40,6 +40,7 @@ namespace FrameConversions {
             }
         }
 
+        // Convert a vector position between the two coordinate frames
         public static Vector3 ConvertPosition(string from, string to, Vector3 v) {
             return ConvertPosition(new AxisSet(from), new AxisSet(to), v);
         }
@@ -75,14 +76,25 @@ namespace FrameConversions {
             return ExtractEulerAngles(to, quat);
         }
 
+        // Convert the provided euler angles from an euler rotation in frame 1 to
+        // frame 2 given the direction and rotation conventions
         public static EulerAngles ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, EulerAngles eulerAngles) {
             return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
         }
         public static EulerAngles ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, EulerAngles eulerAngles) {
 
+            // ToQuaternion doesn't know anything about the axis conventions
+            // about which the the rotations order apply, so it assumes
+            // XYZ are up right left. We use a consistent frame when converting
+            // so the conventions when going back and forth are consistent
+
+            // TODO: Should ToQuaternion be changed to account for this? At the 
+            // moment it assumes the Unity direction convention.
             CoordinateFrame intermediateFrame = new CoordinateFrame("XYZ", "XYZ");
+
             AxisSet order1InInter = ToEquivelentRotationOrder(frame1.Axes, intermediateFrame.Axes, frame1.RotationOrder);
             AxisSet order2InInter = ToEquivelentRotationOrder(frame2.Axes, intermediateFrame.Axes, frame2.RotationOrder);
+
             Quaternion intermediateQuat = ToQuaternion(order1InInter, eulerAngles);
             EulerAngles resultantAngles = ExtractEulerAngles(order2InInter, intermediateQuat);
 
@@ -90,15 +102,15 @@ namespace FrameConversions {
         }
 
         #region Helpers
-
+        // Convert the provided rotation order in frame 1 to the rotation order
+        // that would yield the same rotation in frame 2, given the direction
+        // conventions
         public static AxisSet ToEquivelentRotationOrder(AxisSet axes1, AxisSet axes2, AxisSet rotOrder) {
-            // Step 1
             // State the axes to rotate about
             var r0 = rotOrder[0];
             var r1 = rotOrder[1];
             var r2 = rotOrder[2];
 
-            // Step 2
             // Change the rotation direction based on the axis direction
             r0 = new Axis(
                 r0.name,
@@ -115,7 +127,6 @@ namespace FrameConversions {
                 r2.negative != axes1[axes1[r2.name]].negative
                 );
 
-            // Step 3
             // Substitute in the target axes
             r0 = new Axis(
                 axes2[axes1[r0.name]].name,
