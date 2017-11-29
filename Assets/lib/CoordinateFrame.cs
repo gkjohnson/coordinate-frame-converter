@@ -22,10 +22,6 @@ namespace FrameConversions {
             return Conversions.ConvertPosition(_axes, other._axes, v);
         }
 
-        public Quaternion ToQuaternion(EulerAngles eulerAngles) {
-            return Conversions.ToQuaternion(_rotationOrder, eulerAngles);
-        }
-
         public EulerAngles ToEulerAngles(CoordinateFrame other, EulerAngles eulerAngles) {
             return Conversions.ConvertEulerAngles(other, this, eulerAngles);
         }

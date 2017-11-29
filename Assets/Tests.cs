@@ -194,8 +194,8 @@ public class Tests : MonoBehaviour {
                 EulerAngles eTo = Conversions.ConvertEulerAngles(fr1, fr2, e);
                 EulerAngles eBack = Conversions.ConvertEulerAngles(fr2, fr1, eTo);
 
-                Quaternion qe = fr1.ToQuaternion(e);
-                Quaternion qback = fr1.ToQuaternion(eBack);
+                Quaternion qe = Conversions.ToQuaternion(fr1.RotationOrder, e);
+                Quaternion qback = Conversions.ToQuaternion(fr1.RotationOrder, eBack);
 
                 bool equal =
                     AreVectorsEquivalent(e, eBack, 1e-4f) ||

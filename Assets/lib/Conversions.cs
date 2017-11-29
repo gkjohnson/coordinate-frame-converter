@@ -105,7 +105,7 @@ namespace FrameConversions {
         // Convert the provided rotation order in frame 1 to the rotation order
         // that would yield the same rotation in frame 2, given the direction
         // conventions
-        public static AxisSet ToEquivelentRotationOrder(AxisSet axes1, AxisSet axes2, AxisSet rotOrder) {
+        internal static AxisSet ToEquivelentRotationOrder(AxisSet axes1, AxisSet axes2, AxisSet rotOrder) {
             // State the axes to rotate about
             var r0 = rotOrder[0];
             var r1 = rotOrder[1];
@@ -149,7 +149,7 @@ namespace FrameConversions {
         // Takes euler angles in degrees
         // Returns the rotation as a quaternion that results from
         // applying the rotations in the provided order
-        public static Quaternion ToQuaternion(AxisSet order, EulerAngles euler) {
+        internal static Quaternion ToQuaternion(AxisSet order, EulerAngles euler) {
             Quaternion res = Quaternion.identity;
 
             for (int i = 0; i < 3; i++) {
@@ -168,7 +168,7 @@ namespace FrameConversions {
         // Outputs euler angles in degrees
         // Extracts the rotation in Euler degrees in the 
         // given order
-        public static EulerAngles ExtractEulerAngles(AxisSet order, Quaternion quat) {
+        internal static EulerAngles ExtractEulerAngles(AxisSet order, Quaternion quat) {
             AngleExtraction.EulerResult eu;
             EulerAngles res = extractionFunctions[order.ToString()](quat, out eu);
 
