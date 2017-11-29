@@ -134,6 +134,7 @@ namespace FrameConversions {
 
         #region Helpers
 
+        // Output a string that visually displays the coordinate axes
         public static string ToCoordinateFrameString(AxisSet axes) {
             string r = axes[0].negative ? " " : "-";
             string l = axes[0].negative ? "-" : " ";
@@ -152,6 +153,7 @@ namespace FrameConversions {
                 "     f d    \n" +
                 "   F   d    \n" +
                 "       D    \n";
+
             return template
                 .Replace("R", axes[0].negative ? " " : axes[0].ToString())
                 .Replace("r", r)
@@ -169,6 +171,8 @@ namespace FrameConversions {
                 .Replace("b", b);
         }
 
+        // Output a string that visually displays the coordinate axes
+        // with the rotation order
         public static string ToRotationOrderFrameString(AxisSet axes, AxisSet rotOrder) {
             string str = ToCoordinateFrameString(axes);
             
