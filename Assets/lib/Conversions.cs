@@ -79,60 +79,61 @@ namespace FrameConversions {
             return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
         }
         public static EulerAngles ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, EulerAngles eulerAngles) {
-            // Step 1
-            // State the axes to rotate about
-            var axis0 = frame1.RotationOrder[0];
-            var axis1 = frame1.RotationOrder[1];
-            var axis2 = frame1.RotationOrder[2];
 
-            // Step 2
-            // Change the rotation direction based on the axis direction
-            axis0 = new Axis(
-                axis0.name,
-                axis0.negative != frame1.Axes[frame1.Axes[axis0.name]].negative
-                );
+            CoordinateFrame intermediateFrame = new CoordinateFrame("XYZ", "XYZ");
+            AxisSet order1InInter = ToEquivelentRotationOrder(frame1.Axes, intermediateFrame.Axes, frame1.RotationOrder);
+            AxisSet order2InInter = ToEquivelentRotationOrder(frame2.Axes, intermediateFrame.Axes, frame2.RotationOrder);
+            Quaternion intermediateQuat = ToQuaternion(order1InInter, eulerAngles);
+            EulerAngles resultantAngles = ExtractEulerAngles(order2InInter, intermediateQuat);
 
-            axis1 = new Axis(
-                axis1.name,
-                axis1.negative != frame1.Axes[frame1.Axes[axis1.name]].negative
-                );
-
-            axis2 = new Axis(
-                axis2.name,
-                axis2.negative != frame1.Axes[frame1.Axes[axis2.name]].negative
-                );
-            
-            // Step 3
-            // Substitute in the target axes
-            axis0 = new Axis(
-                frame2.Axes[frame1.Axes[axis0.name]].name,
-                axis0.negative != frame2.Axes[frame1.Axes[axis0.name]].negative
-                );
-
-            axis1 = new Axis(
-                frame2.Axes[frame1.Axes[axis1.name]].name,
-                axis1.negative != frame2.Axes[frame1.Axes[axis1.name]].negative
-                );
-
-            axis2 = new Axis(
-                frame2.Axes[frame1.Axes[axis2.name]].name,
-                axis2.negative != frame2.Axes[frame1.Axes[axis2.name]].negative
-                );
-
-            // Step 4
-            // Create the new extraction order
-            var newOrder = new AxisSet(axis0, axis1, axis2);
-
-            // quat in current coordinate frame
-            Quaternion quat = ToQuaternion(newOrder, eulerAngles);
-
-            // extract in the converted order
-            EulerAngles extracteuler = ExtractEulerAngles(frame2.RotationOrder, quat);
-
-            return extracteuler;
+            return resultantAngles;
         }
 
         #region Helpers
+
+        public static AxisSet ToEquivelentRotationOrder(AxisSet axes1, AxisSet axes2, AxisSet rotOrder) {
+            // Step 1
+            // State the axes to rotate about
+            var r0 = rotOrder[0];
+            var r1 = rotOrder[1];
+            var r2 = rotOrder[2];
+
+            // Step 2
+            // Change the rotation direction based on the axis direction
+            r0 = new Axis(
+                r0.name,
+                r0.negative != axes1[axes1[r0.name]].negative
+                );
+
+            r1 = new Axis(
+                r1.name,
+                r1.negative != axes1[axes1[r1.name]].negative
+                );
+
+            r2 = new Axis(
+                r2.name,
+                r2.negative != axes1[axes1[r2.name]].negative
+                );
+
+            // Step 3
+            // Substitute in the target axes
+            r0 = new Axis(
+                axes2[axes1[r0.name]].name,
+                r0.negative != axes2[axes1[r0.name]].negative
+                );
+
+            r1 = new Axis(
+                axes2[axes1[r1.name]].name,
+                r1.negative != axes2[axes1[r1.name]].negative
+                );
+
+            r2 = new Axis(
+                axes2[axes1[r2.name]].name,
+                r2.negative != axes2[axes1[r2.name]].negative
+                );
+
+            return new AxisSet(r0, r1, r2);
+        }
 
         // Output a string that visually displays the coordinate axes
         public static string ToCoordinateFrameString(AxisSet axes) {
@@ -177,9 +178,9 @@ namespace FrameConversions {
             string str = ToCoordinateFrameString(axes);
             
             return str
-                .Replace(" " + rotOrder[0].name, rotOrder[0].negative ? "-1" : " 1")
-                .Replace(" " + rotOrder[1].name, rotOrder[1].negative ? " -2" : " 2")
-                .Replace(" " + rotOrder[2].name, rotOrder[2].negative ? "-3" : " 3");
+                .Replace(" " + rotOrder[0].name, rotOrder[0].negative ? "-1" : "+1")
+                .Replace(" " + rotOrder[1].name, rotOrder[1].negative ? " -2" : " +2")
+                .Replace(" " + rotOrder[2].name, rotOrder[2].negative ? "-3" : "+3");
         }
 
         // Takes euler angles in degrees
@@ -207,6 +208,7 @@ namespace FrameConversions {
         public static EulerAngles ExtractEulerAngles(AxisSet order, Quaternion quat) {
             AngleExtraction.EulerResult eu;
             EulerAngles res = extractionFunctions[order.ToString()](quat, out eu);
+
             for (int i = 0; i < 3; i++) {
                 if (order[i].negative) res[i] *= -1;
             }
