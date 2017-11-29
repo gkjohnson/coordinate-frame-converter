@@ -79,10 +79,13 @@ namespace FrameConversions {
         // Convert the provided euler angles from an euler rotation in frame 1 to
         // frame 2 given the direction and rotation conventions
         public static EulerAngles ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, EulerAngles eulerAngles) {
-            return ConvertEulerAngles(new CoordinateFrame(fromAxes, fromRotorder), new CoordinateFrame(toAxes, toRotOrder), eulerAngles);
+            return ConvertEulerAngles(new AxisSet(fromAxes), new AxisSet(fromRotorder), new AxisSet(toAxes), new AxisSet(toRotOrder), eulerAngles);
         }
-        public static EulerAngles ConvertEulerAngles(CoordinateFrame frame1, CoordinateFrame frame2, EulerAngles eulerAngles) {
-
+        public static EulerAngles ConvertEulerAngles(CoordinateFrame cf1, CoordinateFrame cf2, EulerAngles eulerAngles) {
+            return ConvertEulerAngles(cf1.Axes, cf1.RotationOrder, cf2.Axes, cf2.RotationOrder, eulerAngles);
+        }
+        public static EulerAngles ConvertEulerAngles(AxisSet axes1, AxisSet rot1, AxisSet axes2, AxisSet rot2, EulerAngles eulerAngles) {
+        
             // ToQuaternion doesn't know anything about the axis conventions
             // about which the the rotations order apply, so it assumes
             // XYZ are up right left. We use a consistent frame when converting
@@ -92,8 +95,8 @@ namespace FrameConversions {
             // moment it assumes the Unity direction convention.
             AxisSet intermediateAxes = new AxisSet("XYZ");
             
-            AxisSet order1InInter = ToEquivelentRotationOrder(frame1.Axes, intermediateAxes, frame1.RotationOrder);
-            AxisSet order2InInter = ToEquivelentRotationOrder(frame2.Axes, intermediateAxes, frame2.RotationOrder);
+            AxisSet order1InInter = ToEquivelentRotationOrder(axes1, intermediateAxes, rot1);
+            AxisSet order2InInter = ToEquivelentRotationOrder(axes2, intermediateAxes, rot2);
 
             Quaternion intermediateQuat = ToQuaternion(order1InInter, eulerAngles);
             EulerAngles resultantAngles = ExtractEulerAngles(order2InInter, intermediateQuat);
