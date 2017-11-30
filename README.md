@@ -37,8 +37,22 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 ### AxisSet
 Represents a set of axes for a position in a coordinate frame or the order in which rotations should be applied.
 
+#### [int] Notation
+Access the first, second, or third access. When used as axis direction conventions, the first element is the "right" axis direction, the second is "up", and the third is "forward"
+
+When used as a rotation order, the indices specify order in which rotations should be applied on which axes.
+
+#### [string] Notation
+Returns the index of the given named axis.
+
 ### CoordinateFrame
 A pair of AxisSets that specify both the position convention and rotation order.
+
+#### ToPosition(CoordinateFrame other, Vector3 position)
+Convert a position in the current coordinate frame into the other coordinate frame.
+
+#### ToEulerAngles(CoordinateFrame other, EulerAngles angles)
+Convert a set of euler angles from the current coordinate frame rotation order into the other coordinate frame.
 
 ### CoordinateFrameConverter
 A helper class for converting back and forth between coordinate frames.
