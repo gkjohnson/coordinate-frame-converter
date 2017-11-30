@@ -18,11 +18,11 @@ namespace FrameConversions {
         #endregion
         
         #region API
-        public Vector3 ToPosition(CoordinateFrame other, Vector3 v) {
+        public Vector3 ConvertPosition(CoordinateFrame other, Vector3 v) {
             return Conversions.ConvertPosition(_axes, other._axes, v);
         }
 
-        public EulerAngles ToEulerAngles(CoordinateFrame other, EulerAngles eulerAngles) {
+        public EulerAngles ConvertEulerAngles(CoordinateFrame other, EulerAngles eulerAngles) {
             return Conversions.ConvertEulerAngles(this, other, eulerAngles);
         }
         #endregion

@@ -179,8 +179,8 @@ public class Tests : MonoBehaviour {
 
                 // Position Tests
                 Vector3 v = new Vector3(1, 2, 3);
-                Vector3 to = fr1.ToPosition(fr2, v);
-                Vector3 back = fr2.ToPosition(fr1, to);
+                Vector3 to = fr1.ConvertPosition(fr2, v);
+                Vector3 back = fr2.ConvertPosition(fr1, to);
 
                 if (!AreVectorsEquivalent(v, back)) issues++;
 
