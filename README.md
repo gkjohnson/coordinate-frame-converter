@@ -70,13 +70,9 @@ A helper class for converting back and forth between coordinate frames.
 - Unity takes euler orders as a vector and applies them in Z, X, Y order (taking them from place 2, then 0, then 1 from the vector). This library assumes the angles in EulerAngles are specified in the order they are applied, so Unity's would have to be specified as [Z, X, Y] in the struct. So Euler Angles specified as `Vector3(10, 20, 30)` in Unity would have to be specified as `EulerAngles(30, 10, 20)`
 
 ## TODO
-- [ ] Add a custom struct for a vector
 - [ ] Get some real world test cases
-- [ ] Document how Vector3 and EulerAngle structs work relative to the coordinate frames
-- [ ] Add an example for converting between frames
 - [ ] Pictures
-- [ ] Gizmo Helper
-- [ ] Reconsider of classes
+- [ ] Reconsider naming of classes
 - [ ] Add thrown errors for failing invalid axis orders
 - [ ] Add flag to indicate whether or not an AxisSet has redundant rotation axes
 - [ ] Look at options for reducing memory allocation and making AxisSets into structs
