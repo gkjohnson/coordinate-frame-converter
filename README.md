@@ -24,7 +24,24 @@ Whether positive rotation is clockwise or counterclockwise about the "right hand
 
 ## Use
 ```cs
-// TODO...
+
+// Unity forward is _into_ the screen, and uses left handed rotations
+CoordinateFrame UnityFrame = new CoordinateFrame("+X+Y-Z", "-Z-X-Y");
+CoordinateFrame OtherFrame = new CoordinateFrame("XYZ", "XYZ");
+
+// Convert a position from the other coordinate frame into Unity's
+OtherFrame.ConvertPosition(UnityFrame, new Vector3(1, 3, 2));
+
+// Convert a set of euler angles from Unity Frame into the other frame
+// Angles are specified in 20 about Z, 30 about X, 40 about Y
+UnityFrame.ConvertEulerAngles(OtherFrame, new EulerAngles(20, 30, 40));
+
+// Wrapper for converting between frames
+CoordinateFrameConverter Unity2Other = new CoordinateFrameConverter(UnityFrame, OtherFrame);
+Unity2Other.ConvertPosition(new Vector3(1,2,3));
+
+// Converting from the other frame to Unity's
+Unity2Other.inverse.ConvertPosition(new Vector3(1,2,3));
 ```
 
 ## Classes
@@ -34,24 +51,16 @@ Represents the position in a coordinate frame. Specifys a point `x` units on the
 ### EulerAngles
 Represents the ordered rotation in a coordinate frame. Specifies the order in degrees a rotation should occur about the first, second, then third rotation axis as specified in a rotation order axis set.
 
-### AxisSet
-Represents a set of axes for a position in a coordinate frame or the order in which rotations should be applied.
-
-#### [int] Notation
-Access the first, second, or third access. When used as axis direction conventions, the first element is the "right" axis direction, the second is "up", and the third is "forward"
-
-When used as a rotation order, the indices specify order in which rotations should be applied on which axes.
-
-#### [string] Notation
-Returns the index of the given named axis.
-
 ### CoordinateFrame
 A pair of AxisSets that specify both the position convention and rotation order.
 
-#### ToPosition(CoordinateFrame other, Vector3 position)
+#### CoordinateFrame(String axisConventions, String rotationOrder)
+Construct a coordinate frame with the axis conventions and rotation order specified as strings.
+
+#### ConvertPosition(CoordinateFrame other, Vector3 position)
 Convert a position in the current coordinate frame into the other coordinate frame.
 
-#### ToEulerAngles(CoordinateFrame other, EulerAngles angles)
+#### ConvertEulerAngles(CoordinateFrame other, EulerAngles angles)
 Convert a set of euler angles from the current coordinate frame rotation order into the other coordinate frame.
 
 ### CoordinateFrameConverter
@@ -59,8 +68,6 @@ A helper class for converting back and forth between coordinate frames.
 
 ## Gotchas
 - Unity takes euler orders as a vector and applies them in Z, X, Y order (taking them from place 2, then 0, then 1 from the vector). This library assumes the angles in EulerAngles are specified in the order they are applied, so Unity's would have to be specified as [Z, X, Y] in the struct. So Euler Angles specified as `Vector3(10, 20, 30)` in Unity would have to be specified as `EulerAngles(30, 10, 20)`
-
-TODO ...
 
 ## TODO
 - [ ] Add a custom struct for a vector
