@@ -114,37 +114,31 @@ namespace FrameConversions {
             var r1 = rotOrder[1];
             var r2 = rotOrder[2];
 
+            // 1. Swap the rotation direction on each axis
+            // based on each axis in the original frame
+
+            // 2. Then convert the axis names into the new
+            // frame and change rotation order based on that
+
+            // Originally two operations
+            // r0 = new Axis(r0.name, r0.negative != axes1[axes1[r0.name]].negative);
+            // r0 = new Axis(axes2[axes1[r0.name]].name, r0.negative != axes2[axes1[r0.name]].negative);
+
             // Change the rotation direction based on the axis direction
             r0 = new Axis(
-                r0.name,
-                r0.negative != axes1[axes1[r0.name]].negative
-                );
-
-            r1 = new Axis(
-                r1.name,
-                r1.negative != axes1[axes1[r1.name]].negative
-                );
-
-            r2 = new Axis(
-                r2.name,
-                r2.negative != axes1[axes1[r2.name]].negative
-                );
-
-            // Substitute in the target axes
-            r0 = new Axis(
                 axes2[axes1[r0.name]].name,
-                r0.negative != axes2[axes1[r0.name]].negative
-                );
+                (r0.negative != axes1[axes1[r0.name]].negative) != axes2[axes1[r0.name]].negative
+            );
 
             r1 = new Axis(
                 axes2[axes1[r1.name]].name,
-                r1.negative != axes2[axes1[r1.name]].negative
-                );
+                (r1.negative != axes1[axes1[r1.name]].negative) != axes2[axes1[r1.name]].negative
+            );
 
             r2 = new Axis(
                 axes2[axes1[r2.name]].name,
-                r2.negative != axes2[axes1[r2.name]].negative
-                );
+                (r2.negative != axes1[axes1[r2.name]].negative) != axes2[axes1[r2.name]].negative
+            );
 
             return new AxisSet(r0, r1, r2);
         }
