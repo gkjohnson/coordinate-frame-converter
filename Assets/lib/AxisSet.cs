@@ -31,7 +31,7 @@ namespace FrameConversions {
             s = s.ToUpper();
 
             // Ensure we're in the right format
-            Debug.Assert(new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s));
+            if (!new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s)) throw new System.Exception("AxisSet must be formed of three axis descriptions: '[+-][XYZ]'");
 
             // Make sure we have three axes
             var matches = new Regex("[+-]?[XYZ]").Matches(s);
@@ -60,7 +60,7 @@ namespace FrameConversions {
                 }
             }
 
-            if (guaranteeUniqueness) Debug.Assert(redundantCount == 0);
+            if (guaranteeUniqueness && redundantCount != 0) throw new System.Exception("AxisSet must not have redundant axis names");
 
             return axes;
         }
