@@ -50,8 +50,12 @@ namespace FrameConversions {
 
             // Make sure we don't have too many redundant axis names
             int redundantCount = 0;
-            foreach (Axis a in axes) {
-                foreach (Axis b in axes) {
+            for (int i = 0; i < axes.Length; i ++) {
+                for (int j = 0; j < axes.Length; j ++) {
+                    if (i == j) continue;
+
+                    Axis a = axes[i];
+                    Axis b = axes[j];
                     redundantCount += a.name == b.name ? 1 : 0;
                 }
             }
