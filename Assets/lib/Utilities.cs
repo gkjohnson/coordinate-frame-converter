@@ -66,5 +66,40 @@ namespace FrameConversions {
             DrawAxis(axes[1], Vector3.up * scale);
             DrawAxis(axes[2], -Vector3.forward * scale);
         }
+
+
+        static void DrawRotateAxis(Vector3 center, Vector3 up, float radius = 0.25f) {
+            Vector3 rotAxis = center.normalized;
+
+            int steps = 10;
+            float angle = 180.0f;
+            float angleStep = angle / steps;
+            for(int i = 0; i < 10; i ++) {
+                Vector3 p0 = center + Quaternion.AngleAxis(angleStep * (i + 0), rotAxis) * up * radius;
+                Vector3 p1 = center + Quaternion.AngleAxis(angleStep * (i + 1), rotAxis) * up * radius;
+
+                Gizmos.DrawLine(p0, p1);
+            }
+        }
+
+        public static void DrawFrame(AxisSet axes, AxisSet rotationOrder, float scale = 1) {
+            DrawFrame(axes, scale);
+
+            Vector3[] dir = new Vector3[] { Vector3.right, Vector3.up, -Vector3.forward };
+
+            for (int i = 0; i < 3; i ++) {
+                Axis rotAxis = rotationOrder[i];
+                int index = axes[rotAxis.name];
+                Axis posAxis = axes[index];
+
+                Gizmos.color = posAxis.name == "X" ? Color.red : posAxis.name == "Y" ? Color.green : Color.blue;
+
+                Vector3 center = dir[index];
+                if (posAxis.negative) center *= -1;
+
+                DrawRotateAxis(center * (0.45f + i * 0.05f), dir[(index + 1) % 3]);
+
+            }
+        }
     }
 }
