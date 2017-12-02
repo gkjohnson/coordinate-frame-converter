@@ -35,7 +35,6 @@ namespace FrameConversions {
 
             // Make sure we have three axes
             var matches = new Regex("[+-]?[XYZ]").Matches(s);
-            Debug.Assert(matches.Count == 3);
 
             // Create the axes
             Axis[] axes = new Axis[3];
@@ -49,6 +48,8 @@ namespace FrameConversions {
             }
 
             // Make sure we don't have too many redundant axis names
+            // TODO: change this to use ifs and properly check for rotation
+            // order redundancy
             int redundantCount = 0;
             for (int i = 0; i < axes.Length; i ++) {
                 for (int j = 0; j < axes.Length; j ++) {
