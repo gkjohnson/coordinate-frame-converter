@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using FrameConversions;
 
 public class FrameHelper : MonoBehaviour {
     public string Axes = "XY-Z";
@@ -8,6 +7,6 @@ public class FrameHelper : MonoBehaviour {
 
     private void OnDrawGizmos() {
         Gizmos.matrix = transform.localToWorldMatrix;
-        FrameConversions.Utilities.DrawFrame(new FrameConversions.AxisSet(Axes), new FrameConversions.AxisSet(RotationOrder, false));
+        Utilities.DrawFrame(new AxisSet(Axes), new AxisSet(RotationOrder, false));
     }
 }
