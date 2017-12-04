@@ -22,6 +22,9 @@ Which order Euler angles are applied.
 
 Whether positive rotation is clockwise or counterclockwise about the "right hand rule". Counterclockwise rotations are considered to be negative.
 
+### Extrinsic and Intrinsic Rotations
+
+
 ## Use
 ```cs
 using FrameConversions;
@@ -62,3 +65,5 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 - [ ] Pictures
 - [ ] Look at options for reducing memory allocation and making AxisSets into structs
 - [ ] Make the axis accessors in AxisSet more clear
+- [ ] Investigate using doubles to reduce floating point error in conversions
+- [ ] Support extrinsic vs intrinsic rotation application
