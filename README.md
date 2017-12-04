@@ -60,8 +60,5 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 ## TODO
 - [ ] Get some real world test cases
 - [ ] Pictures
-- [ ] Reconsider naming of classes
-- [ ] Add thrown errors for failing invalid axis orders
-- [ ] Add flag to indicate whether or not an AxisSet has redundant rotation axes
 - [ ] Look at options for reducing memory allocation and making AxisSets into structs
 - [ ] Make the axis accessors in AxisSet more clear
