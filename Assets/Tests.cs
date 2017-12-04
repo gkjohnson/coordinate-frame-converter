@@ -21,8 +21,26 @@ public class Tests : MonoBehaviour {
             Conversions.ToQuaternion(new AxisSet("-Z-X-Y", true), new EulerAngles(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
         );
 
-        StartCoroutine(RunTests());
+        Debug.Assert(ExpectException(() => new AxisSet("-Z-XZ", false)));
+        Debug.Assert(ExpectException(() => new AxisSet("-Z-ZY", false)));
+        Debug.Assert(ExpectException(() => new AxisSet("-Z-ZY", true)));
+
+        Debug.Assert(ExpectException(() => new CoordinateFrame("XYZ", "XXZ")));
+        Debug.Assert(ExpectException(() => new CoordinateFrame("XYX", "XYZ")));
+
+        StartCoroutine(RunConversionTests());
     }
+
+    #region Helpers
+    bool ExpectException(System.Action func) {
+        try {
+            func();
+        } catch {
+            return true;
+        }
+        return false;
+    }
+    #endregion
 
     #region Generate Axes
     // Returns all possible combinations of axis conventions
@@ -73,7 +91,7 @@ public class Tests : MonoBehaviour {
     #endregion
 
     #region Run Tests
-    IEnumerator RunTests() {
+    IEnumerator RunConversionTests() {
         var conventions = GetAxisConventions();
 
         yield return null;
