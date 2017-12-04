@@ -8,6 +8,7 @@
 
 // Ported file from WildMagic5 for extracting euler angles
 using UnityEngine;
+using System;
 class AngleExtraction {
     public enum EulerResult {
         EA_UNIQUE,
@@ -15,7 +16,7 @@ class AngleExtraction {
         EA_NOT_UNIQUE_SUM
     }
 
-    static float Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
+    static double Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
 
         // TODO: Apparently we reverse the row and column values? Is Unity
         // or WildMagic not doing what we expect?
@@ -42,9 +43,9 @@ class AngleExtraction {
                 // y_angle = asin(r02)
                 // x_angle = atan2(-r12,r22)
                 // z_angle = atan2(-r01,r00)
-                res[1] = Mathf.Asin(Get3x3ElementAtIndex(mat, 2));
-                res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 8));
-                res[2] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
+                res[1] = (float)Math.Asin(Get3x3ElementAtIndex(mat, 2));
+                res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 8));
+                res[2] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -53,8 +54,8 @@ class AngleExtraction {
                 // y_angle = -pi/2
                 // z_angle - x_angle = atan2(r10,r11)
                 // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-                res[1] = -Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
+                res[1] = -(float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -65,8 +66,8 @@ class AngleExtraction {
             // y_angle = +pi/2
             // z_angle + x_angle = atan2(r10,r11)
             // WARNING.  The solutions is not unique.  Choosing z_angle = 0.
-            res[1] = Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
+            res[1] = (float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -90,9 +91,9 @@ class AngleExtraction {
                 // z_angle = asin(-r01)
                 // x_angle = atan2(r21,r11)
                 // y_angle = atan2(r02,r00)
-                res[1] = Mathf.Asin(-Get3x3ElementAtIndex(mat, 1));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 4));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
+                res[1] = (float)Math.Asin(-Get3x3ElementAtIndex(mat, 1));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 4));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -101,8 +102,8 @@ class AngleExtraction {
                 // z_angle = +pi/2
                 // y_angle - x_angle = atan2(-r20,r22)
                 // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-                res[1] = Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6) ,Get3x3ElementAtIndex(mat, 8));
+                res[1] = (float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6) ,Get3x3ElementAtIndex(mat, 8));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -113,8 +114,8 @@ class AngleExtraction {
             // z_angle = -pi/2
             // y_angle + x_angle = atan2(-r20,r22)
             // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-            res[1] = -Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
+            res[1] = -(float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -138,9 +139,9 @@ class AngleExtraction {
                 // x_angle = asin(-r12)
                 // y_angle = atan2(r02,r22)
                 // z_angle = atan2(r10,r11)
-                res[1] = Mathf.Asin(-Get3x3ElementAtIndex(mat, 5));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 8));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
+                res[1] = (float)Math.Asin(-Get3x3ElementAtIndex(mat, 5));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 8));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -149,8 +150,8 @@ class AngleExtraction {
                 // x_angle = +pi/2
                 // z_angle - y_angle = atan2(-r01,r00)
                 // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-                res[1] = Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
+                res[1] = (float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -161,8 +162,8 @@ class AngleExtraction {
             // x_angle = -pi/2
             // z_angle + y_angle = atan2(-r01,r00)
             // WARNING.  The solution is not unique.  Choosing z_angle = 0.
-            res[1] = -Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
+            res[1] = -(float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -186,9 +187,9 @@ class AngleExtraction {
                 // z_angle = asin(r10)
                 // y_angle = atan2(-r20,r00)
                 // x_angle = atan2(-r12,r11)
-                res[1] = Mathf.Asin(Get3x3ElementAtIndex(mat, 3));
-                res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 0));
-                res[2] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
+                res[1] = (float)Math.Asin(Get3x3ElementAtIndex(mat, 3));
+                res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 0));
+                res[2] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -197,8 +198,8 @@ class AngleExtraction {
                 // z_angle = -pi/2
                 // x_angle - y_angle = atan2(r21,r22)
                 // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-                res[1] = -Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
+                res[1] = -(float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -209,8 +210,8 @@ class AngleExtraction {
             // z_angle = +pi/2
             // x_angle + y_angle = atan2(r21,r22)
             // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-            res[1] = Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
+            res[1] = (float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -234,9 +235,9 @@ class AngleExtraction {
                 // x_angle = asin(r21)
                 // z_angle = atan2(-r01,r11)
                 // y_angle = atan2(-r20,r22)
-                res[1] = Mathf.Asin(Get3x3ElementAtIndex(mat, 7));
-                res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 4));
-                res[2] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
+                res[1] = (float)Math.Asin(Get3x3ElementAtIndex(mat, 7));
+                res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 4));
+                res[2] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -245,8 +246,8 @@ class AngleExtraction {
                 // x_angle = -pi/2
                 // y_angle - z_angle = atan2(r02,r00)
                 // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-                res[1] = -Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
+                res[1] = -(float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -257,8 +258,8 @@ class AngleExtraction {
             // x_angle = +pi/2
             // y_angle + z_angle = atan2(r02,r00)
             // WARNING.  The solution is not unique.  Choosing y_angle = 0.
-            res[1] = Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
+            res[1] = (float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -282,9 +283,9 @@ class AngleExtraction {
                 // y_angle = asin(-r20)
                 // z_angle = atan2(r10,r00)
                 // x_angle = atan2(r21,r22)
-                res[1] = Mathf.Asin(-Get3x3ElementAtIndex(mat, 6));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 0));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
+                res[1] = (float)Math.Asin(-Get3x3ElementAtIndex(mat, 6));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 0));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
@@ -293,8 +294,8 @@ class AngleExtraction {
                 // y_angle = +pi/2
                 // x_angle - z_angle = atan2(r01,r02)
                 // WARNING.  The solution is not unique.  Choosing x_angle = 0.
-                res[1] = Mathf.PI / 2.0f;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 2));
+                res[1] = (float)Math.PI / 2.0f;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 2));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -305,8 +306,8 @@ class AngleExtraction {
             // y_angle = -pi/2
             // x_angle + z_angle = atan2(-r01,-r02)
             // WARNING.  The solution is not unique.  Choosing x_angle = 0;
-            res[1] = -Mathf.PI / 2.0f;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), -Get3x3ElementAtIndex(mat, 2));
+            res[1] = -(float)Math.PI / 2.0f;
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), -Get3x3ElementAtIndex(mat, 2));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -330,17 +331,17 @@ class AngleExtraction {
                 // y_angle  = acos(r00)
                 // x0_angle = atan2(r10,-r20)
                 // x1_angle = atan2(r01,r02)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 0));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), -Get3x3ElementAtIndex(mat, 6));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 2));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 0));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), -Get3x3ElementAtIndex(mat, 6));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 2));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else
             {
                 // Not a unique solution:  x1_angle - x0_angle = atan2(-r12,r11)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -350,7 +351,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  x1_angle + x0_angle = atan2(-r12,r11)
             res[1] = 0;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 4));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -374,17 +375,17 @@ class AngleExtraction {
                 // z_angle  = acos(r00)
                 // x0_angle = atan2(r20,r10)
                 // x1_angle = atan2(r02,-r01)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 0));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 3));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), -Get3x3ElementAtIndex(mat, 1));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 0));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 3));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), -Get3x3ElementAtIndex(mat, 1));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else
             {
                 // Not a unique solution:  x1_angle - x0_angle = atan2(r21,r22)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -394,7 +395,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  x1_angle + x0_angle = atan2(r21,r22)
             res[1] = 0;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), Get3x3ElementAtIndex(mat, 8));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -418,17 +419,17 @@ class AngleExtraction {
                 // x_angle  = acos(r11)
                 // y0_angle = atan2(r01,r21)
                 // y1_angle = atan2(r10,-r12)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 4));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 7));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), -Get3x3ElementAtIndex(mat, 5));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 4));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 7));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), -Get3x3ElementAtIndex(mat, 5));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else
             {
                 // Not a unique solution:  y1_angle - y0_angle = atan2(r02,r00)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -438,7 +439,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  y1_angle + y0_angle = atan2(r02,r00)
             res[1] = 0;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), Get3x3ElementAtIndex(mat, 0));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -462,17 +463,17 @@ class AngleExtraction {
                 // z_angle  = acos(r11)
                 // y0_angle = atan2(r21,-r01)
                 // y1_angle = atan2(r12,r10)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 4));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), -Get3x3ElementAtIndex(mat, 1));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 3));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 4));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), -Get3x3ElementAtIndex(mat, 1));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 3));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else
             {
                 // Not a unique solution:  y1_angle - y0_angle = atan2(-r20,r22)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -482,7 +483,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  y1_angle + y0_angle = atan2(-r20,r22)
             res[1] = 0;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -506,17 +507,17 @@ class AngleExtraction {
                 // x_angle  = acos(r22)
                 // z0_angle = atan2(r02,-r12)
                 // z1_angle = atan2(r20,r21)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 8));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 2), -Get3x3ElementAtIndex(mat, 5));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 7));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 8));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 2), -Get3x3ElementAtIndex(mat, 5));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 7));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else
             {
                 // Not a unique solution:  z1_angle - z0_angle = atan2(-r01,r00)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -526,7 +527,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  z1_angle + z0_angle = atan2(-r01,r00)
             res[1] = 0;
-            res[0] = Mathf.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
+            res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 0));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
@@ -550,17 +551,17 @@ class AngleExtraction {
                 // y_angle  = acos(r22)
                 // z0_angle = atan2(r12,r02)
                 // z1_angle = atan2(r21,-r20)
-                res[1] = Mathf.Acos(Get3x3ElementAtIndex(mat, 8));
-                res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 2));
-                res[2] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 7), -Get3x3ElementAtIndex(mat, 6));
+                res[1] = (float)Math.Acos(Get3x3ElementAtIndex(mat, 8));
+                res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 5), Get3x3ElementAtIndex(mat, 2));
+                res[2] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 7), -Get3x3ElementAtIndex(mat, 6));
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }
             else // r22 = -1
             {
                 // Not a unique solution:  z1_angle - z0_angle = atan2(r10,r11)
-                res[1] = Mathf.PI;
-                res[0] = -Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
+                res[1] = (float)Math.PI;
+                res[0] = -(float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
                 res[2] = 0;
                 eulerRes = EulerResult.EA_NOT_UNIQUE_DIF;
                 return res;
@@ -570,7 +571,7 @@ class AngleExtraction {
         {
             // Not a unique solution:  z1_angle + z0_angle = atan2(r10,r11)
             res[1] = 0;
-            res[0] = Mathf.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
+            res[0] = (float)Math.Atan2(Get3x3ElementAtIndex(mat, 3), Get3x3ElementAtIndex(mat, 4));
             res[2] = 0;
             eulerRes = EulerResult.EA_NOT_UNIQUE_SUM;
             return res;
