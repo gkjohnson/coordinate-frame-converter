@@ -7,8 +7,11 @@
 // File Version: 5.0.2 (2012/07/29)
 
 // Ported file from WildMagic5 for extracting euler angles
+
 using UnityEngine;
 using System;
+
+// Extracts angles about extrinsic axes
 class AngleExtraction {
     public enum EulerResult {
         EA_UNIQUE,
