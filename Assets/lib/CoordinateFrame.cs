@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
+// Class representing a full coordinate frame with axis naming conventions
+// and rotation order specified
 namespace FrameConversions {
     public class CoordinateFrame {
         AxisSet _axes, _rotationOrder;

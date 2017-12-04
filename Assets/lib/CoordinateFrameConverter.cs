@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// Class for converting between to fixed coordinate frames
 namespace FrameConversions {
     public class CoordinateFrameConverter {
         CoordinateFrame _fromFrame, _toFrame;

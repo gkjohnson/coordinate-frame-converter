@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
+// Description of a full axis set, such ax -X +Y +Z
+// Can be used to describe rotation orders, as well
 namespace FrameConversions {
-    // Description of a full axis set, such ax -X +Y +Z
     public class AxisSet {
         // Three axes ordered to describe right, up, and forward
         Axis[] _axes;
