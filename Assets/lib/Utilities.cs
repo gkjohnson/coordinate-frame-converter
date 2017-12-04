@@ -106,19 +106,18 @@ namespace FrameConversions {
 
         }
 
+        // Draw the frame with the position and rotation order axes
         public static void DrawFrame(AxisSet axes, AxisSet rotationOrder, EulerAngles stAngles, EulerAngles endAngles, float scale = 1) {
             DrawFrame(axes, scale);
 
+            // Associate axes to the xyz index
             Vector3[] dir = new Vector3[] { Vector3.right, Vector3.up, -Vector3.forward };
-
             for (int i = 0; i < 3; i++) {
                 Axis rotAxis = rotationOrder[i];
                 int index = axes[rotAxis.name];
                 Axis posAxis = axes[index];
 
-                Color col = posAxis.name == "X" ? Color.red : posAxis.name == "Y" ? Color.green : Color.blue;
-                col.a = 0.75f;
-                Gizmos.color = col;
+                Gizmos.color = posAxis.name == "X" ? Color.red : posAxis.name == "Y" ? Color.green : Color.blue;
 
                 Vector3 center = dir[index];
                 if (posAxis.negative) center *= -1;

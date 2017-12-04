@@ -12,8 +12,8 @@ namespace FrameConversions {
 
         #region Constructors
         public CoordinateFrame(string rufAxes, string rotationOrder) {
-            _axes = new AxisSet(rufAxes);
-            _rotationOrder = new AxisSet(rotationOrder);
+            _axes = new AxisSet(rufAxes, false);
+            _rotationOrder = new AxisSet(rotationOrder, true);
         }
         #endregion
         

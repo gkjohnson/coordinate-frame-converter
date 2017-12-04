@@ -42,7 +42,7 @@ namespace FrameConversions {
 
         // Convert a vector position between the two coordinate frames
         public static Vector3 ConvertPosition(string from, string to, Vector3 v) {
-            return ConvertPosition(new AxisSet(from), new AxisSet(to), v);
+            return ConvertPosition(new AxisSet(from, false), new AxisSet(to, false), v);
         }
         public static Vector3 ConvertPosition(AxisSet from, AxisSet to, Vector3 v) {
             Vector3 res = new Vector3();
@@ -79,7 +79,7 @@ namespace FrameConversions {
         // Convert the provided euler angles from an euler rotation in frame 1 to
         // frame 2 given the direction and rotation conventions
         public static EulerAngles ConvertEulerAngles(string fromAxes, string fromRotorder, string toAxes, string toRotOrder, EulerAngles eulerAngles) {
-            return ConvertEulerAngles(new AxisSet(fromAxes), new AxisSet(fromRotorder), new AxisSet(toAxes), new AxisSet(toRotOrder), eulerAngles);
+            return ConvertEulerAngles(new AxisSet(fromAxes, true), new AxisSet(fromRotorder, true), new AxisSet(toAxes, true), new AxisSet(toRotOrder, true), eulerAngles);
         }
         public static EulerAngles ConvertEulerAngles(CoordinateFrame cf1, CoordinateFrame cf2, EulerAngles eulerAngles) {
             return ConvertEulerAngles(cf1.Axes, cf1.RotationOrder, cf2.Axes, cf2.RotationOrder, eulerAngles);
@@ -93,7 +93,7 @@ namespace FrameConversions {
 
             // TODO: Should ToQuaternion be changed to account for this? At the 
             // moment it assumes the Unity direction convention.
-            AxisSet intermediateAxes = new AxisSet("XYZ");
+            AxisSet intermediateAxes = new AxisSet("XYZ", false);
             
             AxisSet order1InInter = ToEquivelentRotationOrder(axes1, intermediateAxes, rot1);
             AxisSet order2InInter = ToEquivelentRotationOrder(axes2, intermediateAxes, rot2);

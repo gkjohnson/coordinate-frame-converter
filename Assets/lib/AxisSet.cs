@@ -20,18 +20,18 @@ namespace FrameConversions {
             _axisToIndex = GetIndexMap(_axes);
         }
 
-        public AxisSet(string axes, bool guaranteeUniqueness = true) {
-            _axes = SanitizeAxisDescription(axes, guaranteeUniqueness);
+        public AxisSet(string axes, bool rotationOrder) {
+            _axes = SanitizeAxisDescription(axes, rotationOrder);
             _axisToIndex = GetIndexMap(_axes);
         }
         #endregion
 
         #region Helpers
-        static Axis[] SanitizeAxisDescription(string s, bool guaranteeUniqueness = true) {
+        static Axis[] SanitizeAxisDescription(string s, bool rotationOrder) {
             s = s.ToUpper();
 
             // Ensure we're in the right format
-            if (!new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s)) throw new System.Exception("AxisSet must be formed of three axis descriptions: '[+-][XYZ]'");
+            if (!new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s)) throw new System.Exception("AxisSet '" + s + "' must be formed of three axis descriptions: '[+-][XYZ]'");
 
             // Make sure we have three axes
             var matches = new Regex("[+-]?[XYZ]").Matches(s);
@@ -47,21 +47,8 @@ namespace FrameConversions {
                 axes[i] = new Axis(axis, negative);
             }
 
-            // Make sure we don't have too many redundant axis names
-            // TODO: change this to use ifs and properly check for rotation
-            // order redundancy
-            int redundantCount = 0;
-            for (int i = 0; i < axes.Length; i ++) {
-                for (int j = 0; j < axes.Length; j ++) {
-                    if (i == j) continue;
-
-                    Axis a = axes[i];
-                    Axis b = axes[j];
-                    redundantCount += a.name == b.name ? 1 : 0;
-                }
-            }
-
-            if (guaranteeUniqueness && redundantCount != 0) throw new System.Exception("AxisSet must not have redundant axis names");
+            if (axes[1].name == axes[0].name || axes[1].name == axes[2].name) throw new System.Exception("The secon axis in AxisSet '" + s + "' cannot be redundant");
+            if (!rotationOrder && axes[0].name == axes[2].name) throw new System.Exception("AxisSet '" + s + "' must not have redundant axis names");
 
             return axes;
         }

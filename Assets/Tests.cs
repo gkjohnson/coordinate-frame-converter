@@ -18,7 +18,7 @@ public class Tests : MonoBehaviour {
         ));
 
         Debug.Assert(
-            Conversions.ToQuaternion(new AxisSet("-Z-X-Y"), new EulerAngles(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
+            Conversions.ToQuaternion(new AxisSet("-Z-X-Y", true), new EulerAngles(30, 10, 20)) == Quaternion.Euler(10, 20, 30)
         );
 
         StartCoroutine(RunTests());
@@ -27,7 +27,7 @@ public class Tests : MonoBehaviour {
     #region Generate Axes
     // Returns all possible combinations of axis conventions
     // and rotation orders if rotations == true
-    List<FrameConversions.AxisSet> GetAxisConventions(bool rotations = false) {
+    List<FrameConversions.AxisSet> GetAxisConventions(bool rotationOrders = false) {
         var axes = new List<FrameConversions.AxisSet>();
         string[] str = new string[] { "X", "Y", "Z" };
 
@@ -39,15 +39,16 @@ public class Tests : MonoBehaviour {
                     if (c == b) matches++;
                     if (c == a) matches++;
 
-                    if (a != b && b != c && (rotations || c != a)) {
+                    if (a != b && b != c && (rotationOrders || c != a)) {
                         for (int a2 = 0; a2 < 2; a2++)
                             for (int b2 = 0; b2 < 2; b2++)
                                 for (int c2 = 0; c2 < 2; c2++) {
                                     axes.Add(
-                                        new FrameConversions.AxisSet(
+                                        new AxisSet(
                                             (a2 == 1 ? "-" : "+") + a +
                                             (b2 == 1 ? "-" : "+") + b +
-                                            (c2 == 1 ? "-" : "+") + c
+                                            (c2 == 1 ? "-" : "+") + c,
+                                            rotationOrders
                                         )
                                     );
                                 }
@@ -58,14 +59,14 @@ public class Tests : MonoBehaviour {
     }
 
     // Returns all possible coordinate frame converters
-    List<FrameConversions.CoordinateFrame> GetCoordinateFrames() {
-        var frames = new List<FrameConversions.CoordinateFrame>();
+    List<CoordinateFrame> GetCoordinateFrames() {
+        var frames = new List<CoordinateFrame>();
         var conventions = GetAxisConventions();
         var rotOrders = GetAxisConventions(true);
 
         foreach (var c in conventions)
             foreach (var ro in rotOrders)
-                frames.Add(new FrameConversions.CoordinateFrame(c.ToString(true), ro.ToString(true)));
+                frames.Add(new CoordinateFrame(c.ToString(true), ro.ToString(true)));
 
         return frames;
     }
@@ -90,7 +91,7 @@ public class Tests : MonoBehaviour {
 
     // Transforms to and from all conventions to make sure the
     // resultant position is the same
-    IEnumerator RunPositionTests(List<FrameConversions.AxisSet> conventions) {
+    IEnumerator RunPositionTests(List<AxisSet> conventions) {
         int issues = 0;
         int total = conventions.Count * conventions.Count;
         int run = 0;
@@ -117,7 +118,7 @@ public class Tests : MonoBehaviour {
 
     // Transforms euler orders back and forth between all rotation orders
     // to make sure the conversions result in the same rotation
-    IEnumerator RunRotationTests(List<FrameConversions.AxisSet> orders) {
+    IEnumerator RunRotationTests(List<AxisSet> orders) {
         int issues = 0;
 
         int total = orders.Count * orders.Count;

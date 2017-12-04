@@ -9,7 +9,7 @@ public class FrameHelper : MonoBehaviour {
     public string RotationOrder = "-Z-X-Y";
     void Draw() {
         Gizmos.matrix = transform.localToWorldMatrix;
-        Utilities.DrawFrame(new AxisSet(Axes), new AxisSet(RotationOrder, false), 0.5f);
+        Utilities.DrawFrame(new AxisSet(Axes, false), new AxisSet(RotationOrder, true), 0.5f);
     }
 
     private void OnDrawGizmosSelected() { if (!AlwaysDraw) Draw(); }
