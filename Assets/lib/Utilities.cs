@@ -55,7 +55,7 @@ namespace FrameConversions {
                 .Replace(" " + rotOrder[1].name, rotOrder[1].negative ? " -2" : " +2")
                 .Replace(" " + rotOrder[2].name, rotOrder[2].negative ? "-3" : "+3");
         }
-        
+
         static void DrawAxis(Axis axis, Vector3 direction) {
             Gizmos.color = axis.name == "X" ? Color.red : axis.name == "Y" ? Color.green : Color.blue;
             Gizmos.DrawRay(Vector3.zero, (axis.negative ? -1 : 1) * direction);
@@ -68,38 +68,54 @@ namespace FrameConversions {
         }
 
 
-        static void DrawRotateAxis(Vector3 center, Vector3 up, float radius = 0.25f) {
+        static void DrawRotateAxis(Vector3 center, Vector3 up, float stAngle, float endAngle, float radius, bool leftHanded) {
+            // Unity is left handed by default
             Vector3 rotAxis = center.normalized;
+            if (!leftHanded) rotAxis *= -1;
 
             int steps = 10;
-            float angle = 180.0f;
-            float angleStep = angle / steps;
-            for(int i = 0; i < 10; i ++) {
-                Vector3 p0 = center + Quaternion.AngleAxis(angleStep * (i + 0), rotAxis) * up * radius;
-                Vector3 p1 = center + Quaternion.AngleAxis(angleStep * (i + 1), rotAxis) * up * radius;
+            float angleDelta = stAngle - endAngle;
+            float angleStep = angleDelta / steps;
+            for (int i = 0; i < 10; i++) {
+                Vector3 p0 = center + Quaternion.AngleAxis(stAngle + angleStep * (i + 0), rotAxis) * up * radius;
+                Vector3 p1 = center + Quaternion.AngleAxis(stAngle + angleStep * (i + 1), rotAxis) * up * radius;
 
                 Gizmos.DrawLine(p0, p1);
             }
+
+            Matrix4x4 origMat = Gizmos.matrix;
+            Vector3 end1 = center + Quaternion.AngleAxis(stAngle + angleStep * 1, rotAxis) * up * radius;
+            Vector3 end2 = center + Quaternion.AngleAxis(stAngle + angleStep * 0, rotAxis) * up * radius;
+            
+            Gizmos.matrix = origMat * Matrix4x4.TRS(end2, Quaternion.LookRotation(end2 - end1, center), Vector3.one);
+
+            Gizmos.DrawFrustum(Vector3.zero, 45, radius * -0.2f, 0, 1);
+            Gizmos.matrix = origMat;
         }
 
-        public static void DrawFrame(AxisSet axes, AxisSet rotationOrder, float scale = 1) {
+        public static void DrawFrame(AxisSet axes, AxisSet rotationOrder, EulerAngles stAngles, EulerAngles endAngles, float scale = 1) {
             DrawFrame(axes, scale);
 
             Vector3[] dir = new Vector3[] { Vector3.right, Vector3.up, -Vector3.forward };
 
-            for (int i = 0; i < 3; i ++) {
+            for (int i = 0; i < 3; i++) {
                 Axis rotAxis = rotationOrder[i];
                 int index = axes[rotAxis.name];
                 Axis posAxis = axes[index];
 
-                Gizmos.color = posAxis.name == "X" ? Color.red : posAxis.name == "Y" ? Color.green : Color.blue;
+                Color col = posAxis.name == "X" ? Color.red : posAxis.name == "Y" ? Color.green : Color.blue;
+                col.a = 0.75f;
+                Gizmos.color = col;
 
                 Vector3 center = dir[index];
                 if (posAxis.negative) center *= -1;
 
-                DrawRotateAxis(center * (0.45f + i * 0.05f), dir[(index + 1) % 3]);
-
+                DrawRotateAxis(center * (0.45f + i * 0.05f) * scale, dir[(index + 1) % 3], stAngles[i], endAngles[i], scale * 0.25f, rotAxis.negative);
             }
+        }
+
+        public static void DrawFrame(AxisSet axes, AxisSet rotationOrder, float scale = 1) {
+            DrawFrame(axes, rotationOrder, new EulerAngles(0,0,0), new EulerAngles(120, 120, 120), scale);
         }
     }
 }
