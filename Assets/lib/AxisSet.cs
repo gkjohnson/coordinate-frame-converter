@@ -16,19 +16,23 @@ namespace FrameConversions {
         #region Constructors
         private AxisSet() { }
 
-        internal AxisSet(Axis right, Axis up, Axis forward) {
-            _axes = new Axis[] { right, up, forward };
+        private AxisSet(Axis[] axes, bool rotationOrder) {
+            _axes = axes;
             _axisToIndex = GetIndexMap(_axes);
+            
+            if (_axes[1].name == _axes[0].name || _axes[1].name == _axes[2].name) throw new System.Exception("The secon axis in AxisSet '" + ToString(true) + "' cannot be redundant");
+            if (!rotationOrder && _axes[0].name == _axes[2].name) throw new System.Exception("AxisSet '" + ToString(true) + "' must not have redundant axis names");
         }
 
-        public AxisSet(string axes, bool rotationOrder) {
-            _axes = SanitizeAxisDescription(axes, rotationOrder);
-            _axisToIndex = GetIndexMap(_axes);
-        }
+        internal AxisSet(Axis right, Axis up, Axis forward, bool rotationOrder)
+            : this(new Axis[] { right, up, forward }, rotationOrder) {}
+        
+        public AxisSet(string axes, bool rotationOrder) 
+            : this(StringToAxes(axes, rotationOrder), rotationOrder) {}
         #endregion
 
         #region Helpers
-        static Axis[] SanitizeAxisDescription(string s, bool rotationOrder) {
+        static Axis[] StringToAxes(string s, bool rotationOrder) {
             s = s.ToUpper();
 
             // Ensure we're in the right format
@@ -47,9 +51,6 @@ namespace FrameConversions {
 
                 axes[i] = new Axis(axis, negative);
             }
-
-            if (axes[1].name == axes[0].name || axes[1].name == axes[2].name) throw new System.Exception("The secon axis in AxisSet '" + s + "' cannot be redundant");
-            if (!rotationOrder && axes[0].name == axes[2].name) throw new System.Exception("AxisSet '" + s + "' must not have redundant axis names");
 
             return axes;
         }

@@ -140,7 +140,7 @@ namespace FrameConversions {
                 (r2.negative != axes1[axes1[r2.name]].negative) != axes2[axes1[r2.name]].negative
             );
 
-            return new AxisSet(r0, r1, r2);
+            return new AxisSet(r0, r1, r2, true);
         }
 
         // Takes euler angles in degrees
