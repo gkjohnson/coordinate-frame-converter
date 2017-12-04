@@ -23,6 +23,9 @@ public class Tests : MonoBehaviour {
 
         Debug.Assert(ExpectException(() => new AxisSet("-Z-XZ", false)));
         Debug.Assert(ExpectException(() => new AxisSet("-Z-ZY", false)));
+        Debug.Assert(ExpectException(() => new AxisSet("X--YZ", false)));
+        Debug.Assert(ExpectException(() => new AxisSet("-+XYZ", false)));
+        Debug.Assert(ExpectException(() => new AxisSet("-+XUZ", false)));
         Debug.Assert(ExpectException(() => new AxisSet("-Z-ZY", true)));
 
         Debug.Assert(ExpectException(() => new CoordinateFrame("XYZ", "XXZ")));
@@ -39,6 +42,14 @@ public class Tests : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    EulerAngles GetRandomAngles() {
+        float x = (Random.value * 2 - 1.0f) * 180;
+        float y = (Random.value * 2 - 1.0f) * 180;
+        float z = (Random.value * 2 - 1.0f) * 180;
+        
+        return new EulerAngles(x, y, z);
     }
     #endregion
 
@@ -104,15 +115,13 @@ public class Tests : MonoBehaviour {
 
         yield return RunPositionTests(conventions);
         yield return RunRotationTests(rotOrders);
-        yield return RunCoordinateFrameTests(coordinateFrames, 100);
+        yield return RunCoordinateFrameTests(coordinateFrames, 500);
     }
 
     // Transforms to and from all conventions to make sure the
     // resultant position is the same
     IEnumerator RunPositionTests(List<AxisSet> conventions) {
         int issues = 0;
-        int total = conventions.Count * conventions.Count;
-        int run = 0;
         foreach (var c1 in conventions) {
             foreach (var c2 in conventions) {
                 Vector3 v = new Vector3(1, 2, 3);
@@ -121,13 +130,11 @@ public class Tests : MonoBehaviour {
                 Vector3 back = Conversions.ConvertPosition(c2, c1, to);
 
                 if (!AreVectorsEquivalent(v, back)) {
-                    Debug.Log(c1.ToString(true) + " could not convert to " + c2.ToString(true));
+                    Debug.LogError(c1.ToString(true) + " could not convert to " + c2.ToString(true));
                     issues++;
                 }
-                run++;
             }
 
-            Debug.Log("Position tests " + ((float)run * 100f / (float)total) + "% complete");
             yield return null;
         }
 
@@ -138,36 +145,27 @@ public class Tests : MonoBehaviour {
     // to make sure the conversions result in the same rotation
     IEnumerator RunRotationTests(List<AxisSet> orders) {
         int issues = 0;
-
-        int total = orders.Count * orders.Count;
-        int run = 0;
         foreach (var o1 in orders) {
             foreach (var o2 in orders) {
-                EulerAngles e = new EulerAngles(20, 40, 80);
+                EulerAngles e = GetRandomAngles();
                 EulerAngles to = Conversions.ConvertEulerOrder(o1, o2, e);
                 EulerAngles back = Conversions.ConvertEulerOrder(o2, o1, to);
 
-                Quaternion qe = Conversions.ToQuaternion(o1, e);
-                Quaternion qback = Conversions.ToQuaternion(o1, back);
-
                 // Check if the rotations are the same or if the rotations
                 // have the equivalent effect on transforming vectors
-                bool equal =
-                    AreVectorsEquivalent(e, back, 1e-4f) ||
-                    AreVectorsEquivalent(qe * Vector3.forward, qback * Vector3.forward, 1e-6f) &&
-                    AreVectorsEquivalent(qe * Vector3.up, qback * Vector3.up, 1e-6f) &&
-                    AreVectorsEquivalent(qe * Vector3.right, qback * Vector3.right, 1e-6f);
+                bool equal = AreRotationsEquivalent(o1, e, back);
 
                 if (!equal) {
-                    Debug.Log(o1.ToString(true) + " > " + o2.ToString(true));
-                    Debug.Log(e.ToString("0.0000") + " > " + to.ToString("0.0000") + " > " + back.ToString("0.0000"));
+                    Debug.LogError("Error converting " + o1.ToString(true) + " > " + o2.ToString(true));
+                    Debug.Log(e.ToString("0.0000000000") + " > " + to.ToString("0.0000000000") + " > " + back.ToString("0.0000000000"));
+
+                    AreRotationsEquivalent(o1, e, back, true);
+
                     issues++;
                 }
-                run++;
             }
-            Debug.Log("Rotation Order tests " + ((float)run * 100f / (float)total) + "% complete");
             yield return null;
-        }
+        } 
 
         Debug.Log("Ran into " + issues + " issues when doing rotation conversions");
     }
@@ -187,9 +185,6 @@ public class Tests : MonoBehaviour {
         }
 
         int issues = 0;
-
-        int total = frames.Count * frames.Count;
-        int run = 0;
         foreach (var fr1 in frames) {
             foreach (var fr2 in frames) {
                 // Verify that the inverse frames work as expected
@@ -209,29 +204,21 @@ public class Tests : MonoBehaviour {
                 if (!AreVectorsEquivalent(v, back)) issues++;
 
                 // Rotation Conversions
-                EulerAngles e = new EulerAngles(10, 20, 30);
+                EulerAngles e = GetRandomAngles();
                 EulerAngles eTo = Conversions.ConvertEulerAngles(fr1, fr2, e);
                 EulerAngles eBack = Conversions.ConvertEulerAngles(fr2, fr1, eTo);
 
-                Quaternion qe = Conversions.ToQuaternion(fr1.RotationOrder, e);
-                Quaternion qback = Conversions.ToQuaternion(fr1.RotationOrder, eBack);
+                bool equal = AreRotationsEquivalent(fr1.RotationOrder, e, eBack);
 
-                bool equal =
-                    AreVectorsEquivalent(e, eBack, 1e-4f) ||
-                    AreVectorsEquivalent(qe * Vector3.forward, qback * Vector3.forward, 1e-6f) &&
-                    AreVectorsEquivalent(qe * Vector3.up, qback * Vector3.up, 1e-6f) &&
-                    AreVectorsEquivalent(qe * Vector3.right, qback * Vector3.right, 1e-6f);
-
-                if (!equal) {
-                    Debug.Log(fr1.ToString(true) + " > " + fr2.ToString(true));
+                if (!equal) { 
+                    Debug.LogError("Error converting " + fr1.ToString(true) + " > " + fr2.ToString(true));
                     Debug.Log(e.ToString("0.0000") + " > " + eTo.ToString("0.0000") + " > " + eBack.ToString("0.0000"));
+                    AreRotationsEquivalent(fr1.RotationOrder, e, eBack, true);
 
                     issues++;
                 }
-                run++;
             }
 
-            Debug.Log("Coordinate Frame tests " + ((float)run * 100f / (float)total) + "% complete");
             yield return null;
         }
 
@@ -241,13 +228,39 @@ public class Tests : MonoBehaviour {
 
     // Checks whether or not the vectors are equivalent, affording some epsilon
     // for vectors representing euler rotations in particular.
-    bool AreVectorsEquivalent(EulerAngles a, EulerAngles b, float eps = 1e-40f) {
-        return AreVectorsEquivalent(new Vector3(a[0], a[1], a[2]), new Vector3(b[0], b[1], b[2]));
+    bool AreRotationsEquivalent(AxisSet rotOrder, EulerAngles a, EulerAngles b, bool debug = false) {
+
+        Quaternion qe = Conversions.ToQuaternion(rotOrder, a);
+        Quaternion qback = Conversions.ToQuaternion(rotOrder, b);
+        
+        // TODO: floating point math errors mean that the margin on
+        // comparisons is super high
+        float eps = 1e-2f;
+
+        Vector3 r = qe * Vector3.right;
+        Vector3 r2 = qback * Vector3.right;
+        bool rcheck = AreVectorsEquivalent(r, r2, eps);
+
+        Vector3 u = qe * Vector3.up;
+        Vector3 u2 = qback * Vector3.up;
+        bool ucheck = AreVectorsEquivalent(u, u2, eps);
+
+        Vector3 f = qe * Vector3.forward;
+        Vector3 f2 = qback * Vector3.forward;
+        bool fcheck = AreVectorsEquivalent(f, f2, eps);
+
+        if (debug) {
+            if (!rcheck) Debug.LogError("Right: " + r.ToString("0.00000000") + " == " + r2.ToString("0.00000000"));
+            if (!ucheck) Debug.LogError("Up: " + u.ToString("0.00000000") + " == " + u2.ToString("0.00000000"));
+            if (!fcheck) Debug.LogError("Forward: " + f.ToString("0.00000000") + " == " + f2.ToString("0.00000000"));
+        }
+
+        return rcheck && ucheck && fcheck;
     }
 
     bool AreVectorsEquivalent(Vector3 a, Vector3 b, float eps = 1e-40f)
-        {
-            Vector3 delta = a - b;
+    {
+        Vector3 delta = a - b;
         delta.x = Mathf.Abs(delta.x);
         delta.y = Mathf.Abs(delta.y);
         delta.z = Mathf.Abs(delta.z);
