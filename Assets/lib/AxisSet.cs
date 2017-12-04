@@ -36,7 +36,7 @@ namespace FrameConversions {
             s = s.ToUpper();
 
             // Ensure we're in the right format
-            if (!new Regex("([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])").IsMatch(s)) throw new System.Exception("AxisSet '" + s + "' must be formed of three axis descriptions: '[+-][XYZ]'");
+            if (!new Regex("^([+-]?[XYZ])([+-]?[XYZ])([+-]?[XYZ])$").IsMatch(s)) throw new System.Exception("AxisSet '" + s + "' must be formed of three axis descriptions: '[+-][XYZ]'");
 
             // Make sure we have three axes
             var matches = new Regex("[+-]?[XYZ]").Matches(s);
