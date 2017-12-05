@@ -30,12 +30,22 @@ public class Tests : MonoBehaviour {
 
         Debug.Assert(ExpectException(() => new CoordinateFrame("XYZ", "XXZ")));
         Debug.Assert(ExpectException(() => new CoordinateFrame("XYX", "XYZ")));
-        
-        // Here to test issue #1
-        // https://github.com/gkjohnson/coordinate-frame-converter/issues/1
-        EulerAngles e = new EulerAngles(170, 90, -27);
-        EulerAngles to = Conversions.ConvertEulerOrder(Frames.Unity.RotationOrder, Frames.Unity.RotationOrder, e);
-        Debug.Assert(AreRotationsEquivalent(Frames.Unity.RotationOrder, e, to));
+
+        // Cases that failed before fixing the floating point math issue
+        {
+            EulerAngles e = new EulerAngles(170, 90, -27);
+            EulerAngles to = Conversions.ConvertEulerOrder(Frames.Unity.RotationOrder, Frames.Unity.RotationOrder, e);
+            Debug.Assert(AreRotationsEquivalent(Frames.Unity.RotationOrder, e, to));
+        }
+
+        {
+            AxisSet ro = new AxisSet("-X-Y-X", true);
+            EulerAngles e = new EulerAngles(0, 90, 210);
+            EulerAngles to = Conversions.ConvertEulerOrder(Frames.Unity.RotationOrder, ro, e);
+            EulerAngles back = Conversions.ConvertEulerOrder(ro, Frames.Unity.RotationOrder, to);
+
+            Debug.Assert(AreRotationsEquivalent(Frames.Unity.RotationOrder, e, back));
+        }
 
         StartCoroutine(RunConversionTests());
     }

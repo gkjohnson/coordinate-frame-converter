@@ -163,10 +163,8 @@ namespace FrameConversions {
                 angles *= -1;
                 res = Quaternion.Euler(angles) * res;
             }
-
-            // See issue #1
-            // https://github.com/gkjohnson/coordinate-frame-converter/issues/1
-            return Quaternion.Euler(res.eulerAngles);
+            
+            return res;
         }
 
         // Outputs euler angles in degrees

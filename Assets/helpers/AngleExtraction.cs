@@ -19,6 +19,7 @@ class AngleExtraction {
         EA_NOT_UNIQUE_SUM
     }
 
+    static float epsilon = 1e-7f;
     static double Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
         int col = i / 3;
         int row = i % 3;
@@ -36,9 +37,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cx*cz*sy+sx*sz   cz*sx+cx*sy*sz   cx*cy |
         // +-           -+   +-                                        -+
 
-        if (Get3x3ElementAtIndex(mat, 2) < 1)
+        if (Get3x3ElementAtIndex(mat, 2) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 2) > -1)
+            if (Get3x3ElementAtIndex(mat, 2) > -(1 - epsilon))
             {
                 // y_angle = asin(r02)
                 // x_angle = atan2(-r12,r22)
@@ -84,9 +85,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cx*sy+cy*sx*sz   cz*sx   cx*cy+sx*sy*sz |
         // +-           -+   +-                                        -+
 
-        if (Get3x3ElementAtIndex(mat, 1) < 1)
+        if (Get3x3ElementAtIndex(mat, 1) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 1) > -1)
+            if (Get3x3ElementAtIndex(mat, 1) > -(1 - epsilon))
             {
                 // z_angle = asin(-r01)
                 // x_angle = atan2(r21,r11)
@@ -132,9 +133,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cz*sy+cy*sx*sz  cy*cz*sx+sy*sz   cx*cy |
         // +-           -+   +-                                       -+
 
-        if (Get3x3ElementAtIndex(mat, 5) < 1)
+        if (Get3x3ElementAtIndex(mat, 5) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 5) > -1)
+            if (Get3x3ElementAtIndex(mat, 5) > -(1 - epsilon))
             {
                 // x_angle = asin(-r12)
                 // y_angle = atan2(r02,r22)
@@ -180,9 +181,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cz*sy  cy*sx+cx*sy*sz   cx*cy-sx*sy*sz |
         // +-           -+   +-                                       -+
 
-        if (Get3x3ElementAtIndex(mat, 3) < 1)
+        if (Get3x3ElementAtIndex(mat, 3) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 3) > -1)
+            if (Get3x3ElementAtIndex(mat, 3) > -(1 - epsilon))
             {
                 // z_angle = asin(r10)
                 // y_angle = atan2(-r20,r00)
@@ -228,9 +229,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cx*sy            sx      cx*cy          |
         // +-           -+   +-                                        -+
 
-        if (Get3x3ElementAtIndex(mat, 7) < 1)
+        if (Get3x3ElementAtIndex(mat, 7) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 7) > -1)
+            if (Get3x3ElementAtIndex(mat, 7) > -(1 - epsilon))
             {
                 // x_angle = asin(r21)
                 // z_angle = atan2(-r01,r11)
@@ -277,9 +278,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -sy     cy*sx           cx*cy          |
         // +-           -+   +-                                      -+
 
-        if (Get3x3ElementAtIndex(mat, 6) < 1)
+        if (Get3x3ElementAtIndex(mat, 6) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 6) > -1)
+            if (Get3x3ElementAtIndex(mat, 6) > -(1 - epsilon))
             {
                 // y_angle = asin(-r20)
                 // z_angle = atan2(r10,r00)
@@ -325,9 +326,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -sy*cx0  cx1*sx0+cy*cx0*sx1   cy*cx0*cx1-sx0*sx1 |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 0) < 1)
+        if (Get3x3ElementAtIndex(mat, 0) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 0) > -1)
+            if (Get3x3ElementAtIndex(mat, 0) > -(1 - epsilon))
             {
                 // y_angle  = acos(r00)
                 // x0_angle = atan2(r10,-r20)
@@ -369,9 +370,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | sz*sx0   cz*cx1*sx0+cx0*sx1   cx0*cx1-cz*sx0*sx1 |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 0) < 1)
+        if (Get3x3ElementAtIndex(mat, 0) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 0) > -1)
+            if (Get3x3ElementAtIndex(mat, 0) > -(1 - epsilon))
             {
                 // z_angle  = acos(r00)
                 // x0_angle = atan2(r20,r10)
@@ -413,9 +414,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cy1*sy0-cx*cy0*sy1  sx*cy0   cx*cy0*cy1-sy0*sy1 |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 4) < 1)
+        if (Get3x3ElementAtIndex(mat, 4) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 4) > -1)
+            if (Get3x3ElementAtIndex(mat, 4) > -(1 - epsilon))
             {
                 // x_angle  = acos(r11)
                 // y0_angle = atan2(r01,r21)
@@ -457,9 +458,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -cz*cy1*sy0-cy0*sy1   sz*sy0  cy0*cy1-cz*sy0*sy1 |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 4) < 1)
+        if (Get3x3ElementAtIndex(mat, 4) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 4) > -1)
+            if (Get3x3ElementAtIndex(mat, 4) > -(1 - epsilon))
             {
                 // z_angle  = acos(r11)
                 // y0_angle = atan2(r21,-r01)
@@ -501,9 +502,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | sx*sz1               sx*cz1               cx     |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 8) < 1)
+        if (Get3x3ElementAtIndex(mat, 8) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 8) > -1)
+            if (Get3x3ElementAtIndex(mat, 8) > -(1 - epsilon))
             {
                 // x_angle  = acos(r22)
                 // z0_angle = atan2(r02,-r12)
@@ -545,9 +546,9 @@ class AngleExtraction {
         // | r20 r21 r22 |   | -sy*cz1               sy*sz1              cy     |
         // +-           -+   +-                                                -+
 
-        if (Get3x3ElementAtIndex(mat, 8) < 1)
+        if (Get3x3ElementAtIndex(mat, 8) < 1 - epsilon)
         {
-            if (Get3x3ElementAtIndex(mat, 8) > -1)
+            if (Get3x3ElementAtIndex(mat, 8) > -(1 - epsilon))
             {
                 // y_angle  = acos(r22)
                 // z0_angle = atan2(r12,r02)
