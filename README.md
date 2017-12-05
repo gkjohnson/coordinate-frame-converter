@@ -68,8 +68,3 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 
 ## Gotchas
 - Unity takes euler orders as a vector and applies them in Z, X, Y order (taking them from place 2, then 0, then 1 from the vector). This library assumes the angles in EulerAngles are specified in the order they are applied, so Unity's would have to be specified as [Z, X, Y] in the struct. So Euler Angles specified as `Vector3(10, 20, 30)` in Unity would have to be specified as `EulerAngles(30, 10, 20)`
-
-## TODO
-- [ ] Get some real world test cases
-- [ ] Look at options for reducing memory allocation and making AxisSets into structs
-- [ ] Support extrinsic vs intrinsic rotation application
