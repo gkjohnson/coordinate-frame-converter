@@ -70,8 +70,6 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 
 ## TODO
 - [ ] Get some real world test cases
-- [ ] Pictures
 - [ ] Look at options for reducing memory allocation and making AxisSets into structs
-- [ ] Make the axis accessors in AxisSet more clear
 - [ ] Investigate using doubles to reduce floating point error in conversions
 - [ ] Support extrinsic vs intrinsic rotation application

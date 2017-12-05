@@ -30,6 +30,12 @@ public class Tests : MonoBehaviour {
 
         Debug.Assert(ExpectException(() => new CoordinateFrame("XYZ", "XXZ")));
         Debug.Assert(ExpectException(() => new CoordinateFrame("XYX", "XYZ")));
+        
+        // Here to test issue #1
+        // https://github.com/gkjohnson/coordinate-frame-converter/issues/1
+        EulerAngles e = new EulerAngles(170, 90, -27);
+        EulerAngles to = Conversions.ConvertEulerOrder(Frames.Unity.RotationOrder, Frames.Unity.RotationOrder, e);
+        Debug.Assert(AreRotationsEquivalent(Frames.Unity.RotationOrder, e, to));
 
         StartCoroutine(RunConversionTests());
     }

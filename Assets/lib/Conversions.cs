@@ -164,13 +164,8 @@ namespace FrameConversions {
                 res = Quaternion.Euler(angles) * res;
             }
 
-            // This seems to fix some issues with angle extraction in the
-            // AngleExtraction class. The eulerAngles this spits out
-            // are not necessarily the same as the ones going in, and can
-            // result in different quaternion values, it seems.
-            // EulerAngles(170, 90, -27) in Unity Frame is one example
-            // TODO: Why does this change the matrix that gets made in
-            // such a way that it breaks the angle extraction?
+            // See issue #1
+            // https://github.com/gkjohnson/coordinate-frame-converter/issues/1
             return Quaternion.Euler(res.eulerAngles);
         }
 
