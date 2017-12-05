@@ -2,6 +2,14 @@
 
 A Unity utility for simply converting between different coordinate frames.
 
+![Example Rotation](docs/example.gif)
+
+Showing difference in euler angle application for frame `+X+Y-Z, -Z-X-Y` (left) and `+Z+X+Y, +X+Y+X` (right).
+
+The angles `40, -120, -105` in the first frame are equivelant to `-40, -100, -150` in the second.
+
+
+
 ## Considerations
 ### Axis Direction
 
