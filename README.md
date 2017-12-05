@@ -6,7 +6,7 @@ A Unity utility for simply converting between different coordinate frames.
 
 Showing difference in euler angle application for frame `+X+Y-Z, -Z-X-Y` (left) and `+Z+X+Y, +X+Y+X` (right).
 
-The angles `40, -120, -105` in the first frame are equivelant to `-40, -100, -150` in the second.
+The angles `40, -220, -105` in the first frame are equivelant to `-40, -100, -150` in the second.
 
 
 
@@ -32,6 +32,7 @@ Whether positive rotation is clockwise or counterclockwise about the "right hand
 
 ### Extrinsic and Intrinsic Rotations
 
+Angles are applied using _extrinsic_ or _fixed axis_ rotations by default. To use _intrinsic_ or _moving axis_ rotations, simply invert the order in which rotations are applied.
 
 ## Use
 ```cs
@@ -71,5 +72,4 @@ Represents the ordered rotation in a coordinate frame. Specifies the order in de
 ## TODO
 - [ ] Get some real world test cases
 - [ ] Look at options for reducing memory allocation and making AxisSets into structs
-- [ ] Investigate using doubles to reduce floating point error in conversions
 - [ ] Support extrinsic vs intrinsic rotation application
