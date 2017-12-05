@@ -20,9 +20,6 @@ class AngleExtraction {
     }
 
     static double Get3x3ElementAtIndex(Matrix4x4 mat, int i) {
-
-        // TODO: Apparently we reverse the row and column values? Is Unity
-        // or WildMagic not doing what we expect?
         int col = i / 3;
         int row = i % 3;
 
@@ -241,6 +238,7 @@ class AngleExtraction {
                 res[1] = (float)Math.Asin(Get3x3ElementAtIndex(mat, 7));
                 res[0] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 1), Get3x3ElementAtIndex(mat, 4));
                 res[2] = (float)Math.Atan2(-Get3x3ElementAtIndex(mat, 6), Get3x3ElementAtIndex(mat, 8));
+
                 eulerRes = EulerResult.EA_UNIQUE;
                 return res;
             }

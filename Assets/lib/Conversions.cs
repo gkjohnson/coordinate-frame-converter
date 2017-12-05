@@ -93,7 +93,9 @@ namespace FrameConversions {
 
             // TODO: Should ToQuaternion be changed to account for this? At the 
             // moment it assumes the Unity direction convention.
-            AxisSet intermediateAxes = new AxisSet("XYZ", false);
+            // TODO: Using anything other than XY-Z (unity's frame) here causes
+            // some oddities in the way rotations are applied
+            AxisSet intermediateAxes = new AxisSet("XY-Z", false);
             
             AxisSet order1InInter = ToEquivelentRotationOrder(axes1, intermediateAxes, rot1);
             AxisSet order2InInter = ToEquivelentRotationOrder(axes2, intermediateAxes, rot2);
@@ -146,6 +148,9 @@ namespace FrameConversions {
         // Takes euler angles in degrees
         // Returns the rotation as a quaternion that results from
         // applying the rotations in the provided order
+        // TODO: This function basically requires that angles be
+        // in Unity's frame in order to really work, does it make sense to expose
+        // it or use it?
         internal static Quaternion ToQuaternion(AxisSet order, EulerAngles euler) {
             Quaternion res = Quaternion.identity;
 
@@ -156,10 +161,17 @@ namespace FrameConversions {
                 
                 // Unity's default rotation direction is negative
                 angles *= -1;
-
                 res = Quaternion.Euler(angles) * res;
             }
-            return res;
+
+            // This seems to fix some issues with angle extraction in the
+            // AngleExtraction class. The eulerAngles this spits out
+            // are not necessarily the same as the ones going in, and can
+            // result in different quaternion values, it seems.
+            // EulerAngles(170, 90, -27) in Unity Frame is one example
+            // TODO: Why does this change the matrix that gets made in
+            // such a way that it breaks the angle extraction?
+            return Quaternion.Euler(res.eulerAngles);
         }
 
         // Outputs euler angles in degrees
