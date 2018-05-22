@@ -140,3 +140,9 @@ resultantOrder.z *= 1;
 // TODO: convert the order
 
 ```
+
+## References
+
+https://en.wikipedia.org/wiki/Euler_angles#Intrinsic_rotations
+https://en.wikibooks.org/wiki/Cg_Programming/Unity/Rotations
+http://danceswithcode.net/engineeringnotes/rotations_in_3d/rotations_in_3d_part1.html
