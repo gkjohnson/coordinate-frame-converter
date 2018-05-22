@@ -31,6 +31,13 @@ Unity's rotation order would then be considered to be `-Z`, `-Y`, `-X`.
 ### Addressing Axes in Rotation Order
 It may be more convenient to address the rotation axes by direction rather than axis name to avoid confusion, such as `forward`, then `up`, then `right`. This might make the transform of rotation orders between coordinate frames more intuitive, because the axes rotated about must change when converting between frames, but using the same rotation order in space.
 
+### Fixed / Extrinsic vs Moving / Intrinsic Rotations
+Fixed (or extrinsic) axis rotations rotate about the fixed axes in the original coordinate frame (before any rotations happen). This means that a rotation specified about the X, then Y, then Z axes are actually applied with the matrices in the `ZRot * YRot * XRot * Mat` order.
+
+Moving (or intrinsic) axis rotations rotate about the axis in the frame that has been transformed by the previous rotation. This can be more intuitively as a airplanes rotations. Of course, it's just a way of thinking about the rotations. The math is the same. 
+
+To go from extrinsic to intrinsic rotation application (or back), invert the order of the rotation application (`XYZ` <-> `ZYX`)
+
 ## Transforms
 ### Example Frames
 `(sign axis)` indicates counter-clock and order of rotation application 
@@ -133,4 +140,3 @@ resultantOrder.z *= 1;
 // TODO: convert the order
 
 ```
-TODO: Verify this
