@@ -59,6 +59,42 @@ Unity2Other.ConvertPosition(new Vector3(1,2,3));
 Unity2Other.inverse.ConvertPosition(new Vector3(1,2,3));
 ```
 
+## API
+
+### CoordinateFrame
+
+#### Constructor
+
+```cs
+CoordinateFrame( string rightUpForwardAxes, string rotationOrder )
+```
+
+Specify the coordinate axes that define the vector used for `RIGHT`, `UP`, and `FORWARD` (out of the screen). The rotation order is specified with a similar string indicating the order in which rotations occur in the frame using fixed axes. The rotations are assumed to be right handed so if a left handed rotation is needed then negate the rotation:
+
+```cs
+// Left handed coordinate frame with left handed rotations.
+new CoordinateFrame( "+X+Y-Z", "-Z-X-Y" );
+
+// Right handed coordinate frame with right handed rotations.
+new CoordinateFrame("XYZ", "XYZ")
+```
+
+#### ConvertPosition
+
+```cs
+Vector3 ConvertPosition( CoordinateFrame targetFrame, Vector3 position )
+```
+
+Converts the given position into the target frame.
+
+#### ConvertEulerAngles
+
+```cs
+Euler ConvertEulerAngles( CoordinateFrame targetFrame, Euler angles )
+```
+
+Converts the given angles into the given frames rotation order.
+
 ## Structs
 ### Unity.Vector3
 Represents the position in a coordinate frame. Specifys a point `x` units on the X axis, `y` units on the Y axis, and `z` units on the Z axis in the particular frame the point is in.
