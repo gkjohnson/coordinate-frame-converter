@@ -30,6 +30,8 @@ Which order Euler angles are applied.
 
 Whether positive rotation is clockwise or counterclockwise about the "right hand rule". Counterclockwise rotations are considered to be negative.
 
+_Note that positive rotation direction should be determined by the handed-ness of the coordinate system. Right handed systems use clockwise rotations, left handed use the opposite._
+
 ### Extrinsic and Intrinsic Rotations
 
 Angles are applied using _extrinsic_ or _fixed axis_ rotations by default. To use _intrinsic_ or _moving axis_ rotations, simply invert the order in which rotations are applied.
